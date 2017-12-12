@@ -2,17 +2,48 @@ package main
 
 import (
 	"bytes"
+	"fmt"
+	"github.com/gypsydave5/blawg/post"
 	"html/template"
 	"log"
 	"os"
+	"path/filepath"
 )
 
 func main() {
-	homepage := blackfriday.Run([]byte("# Title\n\nparagraph\n\nanother paragraph"))
+	var posts []post.Page
+	posts = createPosts()
+
+	for _, post := range posts {
+		fmt.Println(post.Metadata)
+	}
 
 	buildHomepage()
+}
 
-	page.Parse()
+func createPosts() []post.Page {
+	postDir := "_posts"
+	posts := []post.Page{}
+
+	err := filepath.Walk(postDir, func(path string, fileInfo os.FileInfo, err error) error {
+		if fileInfo.IsDir() {
+			return nil
+		}
+
+		f, err := os.Open(path)
+		check(err)
+		defer f.Close()
+		post, err := post.Parse(f)
+		if err != nil {
+			log.Fatalf("Failed for %s : %s", path, err)
+		}
+		posts = append(posts, *post)
+		return err
+	})
+
+	check(err)
+
+	return posts
 }
 
 func buildHomepage() {
