@@ -76,6 +76,14 @@ func TestParse(t *testing.T) {
 	if newPage.Layout != "post" {
 		t.Error("Did not get expected layout", newPage.Layout)
 	}
+
+	var expectedHTML = `<p>This is the body of the post</p>
+
+<h2>A sub header</h2>
+`
+	if string(newPage.Body) != expectedHTML {
+		t.Error("Did not get expected body", newPage.Body)
+	}
 }
 
 func TestAddMeta(t *testing.T) {
