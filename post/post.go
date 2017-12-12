@@ -1,10 +1,11 @@
-package page
+package post
 
 import (
 	"bufio"
 	"bytes"
 	"errors"
 	"fmt"
+	"gopkg.in/russross/blackfriday.v2"
 	"io"
 	"time"
 
@@ -14,30 +15,30 @@ import (
 const dateFormat = "2006-01-02 15:04:05"
 
 type Page struct {
-	Body string
+	Body []byte
 	Date time.Time
-	metadata
+	Metadata
 }
 
-type metadata struct {
+type Metadata struct {
 	Title      string   `yaml:"title"`
 	Layout     string   `yaml:"layout"`
 	Date       string   `yaml:"date"`
 	Categories []string `yaml:"categories"`
 }
 
-func parse(rawPage io.Reader) (*Page, error) {
+func Parse(rawPage io.Reader) (*Page, error) {
 	page := new(Page)
 	rawMeta, body, err := split(rawPage)
 	if err != nil {
 		return page, err
 	}
 	addMeta(rawMeta, page)
-	page.Body = body
+	page.Body = blackfriday.Run(body)
 	return page, nil
 }
 
-func split(page io.Reader) (meta, body string, err error) {
+func split(page io.Reader) (meta, body []byte, err error) {
 	var m bytes.Buffer
 	var b bytes.Buffer
 	scanner := bufio.NewScanner(page)
@@ -64,13 +65,13 @@ func split(page io.Reader) (meta, body string, err error) {
 		b.WriteString(fmt.Sprintln(line))
 	}
 
-	return m.String(), b.String(), nil
+	return m.Bytes(), b.Bytes(), nil
 }
 
-func addMeta(rawMeta string, page *Page) (err error) {
-	meta := metadata{}
+func addMeta(rawMeta []byte, page *Page) (err error) {
+	meta := Metadata{}
 
-	err = yaml.Unmarshal([]byte(rawMeta), &meta)
+	err = yaml.Unmarshal(rawMeta, &meta)
 	if err != nil {
 		return err
 	}
@@ -81,7 +82,7 @@ func addMeta(rawMeta string, page *Page) (err error) {
 	}
 
 	page.Date = date
-	page.metadata = meta
+	page.Metadata = meta
 
 	return
 }

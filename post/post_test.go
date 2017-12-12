@@ -1,4 +1,4 @@
-package page
+package post
 
 import (
 	"reflect"
@@ -38,12 +38,11 @@ published: true
 
 ## A sub header
 `
-
-	if expectedMeta != meta {
+	if expectedMeta != string(meta) {
 		t.Error("Did not get meta data")
 	}
 
-	if expectedBody != body {
+	if expectedBody != string(body) {
 		t.Error("Did not get the body", body)
 	}
 }
@@ -69,7 +68,7 @@ or here`
 }
 
 func TestParse(t *testing.T) {
-	newPage, err := parse(strings.NewReader(page))
+	newPage, err := Parse(strings.NewReader(page))
 	if err != nil {
 		t.Error(err)
 	}
@@ -77,7 +76,6 @@ func TestParse(t *testing.T) {
 	if newPage.Layout != "post" {
 		t.Error("Did not get expected layout", newPage.Layout)
 	}
-
 }
 
 func TestAddMeta(t *testing.T) {
@@ -91,7 +89,7 @@ published: true
 `
 	page := new(Page)
 
-	err := addMeta(rawMeta, page)
+	err := addMeta([]byte(rawMeta), page)
 
 	if err != nil {
 		t.Error(err)
@@ -114,5 +112,4 @@ published: true
 	if !reflect.DeepEqual(page.Categories, []string{"category1", "category2"}) {
 		t.Error("Did not get the expected categories", page.Categories)
 	}
-
 }
