@@ -3,15 +3,15 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/gypsydave5/blawg/post"
 	"html/template"
 	"log"
 	"os"
 	"path/filepath"
+	"github.com/gypsydave5/blawg"
 )
 
 func main() {
-	var posts []post.Page
+	var posts []blawg.Post
 	posts = createPosts()
 
 	for _, post := range posts {
@@ -21,9 +21,9 @@ func main() {
 	buildHomepage()
 }
 
-func createPosts() []post.Page {
+func createPosts() []blawg.Post {
 	postDir := "_posts"
-	posts := []post.Page{}
+	posts := []blawg.Post{}
 
 	err := filepath.Walk(postDir, func(path string, fileInfo os.FileInfo, err error) error {
 		if fileInfo.IsDir() {
@@ -33,7 +33,8 @@ func createPosts() []post.Page {
 		f, err := os.Open(path)
 		check(err)
 		defer f.Close()
-		post, err := post.Parse(f)
+
+		post, err := blawg.Parse(f)
 		if err != nil {
 			log.Fatalf("Failed for %s : %s", path, err)
 		}

@@ -1,4 +1,4 @@
-package parse
+package blawg
 
 import (
 	"bufio"
@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"gopkg.in/russross/blackfriday.v2"
-	"github.com/gypsydave5/blawg"
 	"io"
 	"time"
 
@@ -15,8 +14,8 @@ import (
 
 const DateFormat = "2006-01-02 15:04:05"
 
-func Parse(rawPage io.Reader) (*blawg.Post, error) {
-	page := new(blawg.Post)
+func Parse(rawPage io.Reader) (*Post, error) {
+	page := new(Post)
 	rawMeta, body, err := split(rawPage)
 	if err != nil {
 		return page, err
@@ -56,8 +55,8 @@ func split(page io.Reader) (meta, body []byte, err error) {
 	return m.Bytes(), b.Bytes(), nil
 }
 
-func addMeta(rawMeta []byte, page *blawg.Post) (err error) {
-	meta := blawg.Metadata{}
+func addMeta(rawMeta []byte, page *Post) (err error) {
+	meta := Metadata{}
 
 	err = yaml.Unmarshal(rawMeta, &meta)
 	if err != nil {

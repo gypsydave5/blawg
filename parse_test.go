@@ -1,4 +1,4 @@
-package parse
+package blawg
 
 import (
 	"reflect"
@@ -25,7 +25,7 @@ This is the body of the post
 func TestSplitNoMeta(t *testing.T) {
 	_, err := Parse(strings.NewReader(`no meta block here!`))
 
-	if err.Error() != "No metadata block" {
+	if err.Error() != "no metadata block" {
 		t.Error("did not get the expected error: ", err)
 	}
 }
@@ -37,7 +37,7 @@ or here`
 
 	_, err := Parse(strings.NewReader(noBody))
 
-	if err.Error() != "No end to the metadata block" {
+	if err.Error() != "no end to the metadata block" {
 		t.Error("did not get the expected error", err.Error())
 	}
 }
