@@ -13,7 +13,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-const dateFormat = "2006-01-02 15:04:05"
+const DateFormat = "2006-01-02 15:04:05"
 
 func Parse(rawPage io.Reader) (*blawg.Post, error) {
 	page := new(blawg.Post)
@@ -33,7 +33,7 @@ func split(page io.Reader) (meta, body []byte, err error) {
 
 	scanner.Scan()
 	if line := scanner.Text(); line != "---" {
-		return meta, body, errors.New("No metadata block")
+		return meta, body, errors.New("no metadata block")
 	}
 
 	for scanner.Scan() {
@@ -45,7 +45,7 @@ func split(page io.Reader) (meta, body []byte, err error) {
 	}
 
 	if scanner.Text() != "---" {
-		return meta, body, errors.New("No end to the metadata block")
+		return meta, body, errors.New("no end to the metadata block")
 	}
 
 	for scanner.Scan() {
@@ -64,7 +64,7 @@ func addMeta(rawMeta []byte, page *blawg.Post) (err error) {
 		return err
 	}
 
-	date, err := time.Parse(dateFormat, meta.Date)
+	date, err := time.Parse(DateFormat, meta.Date)
 	if err != nil {
 		return err
 	}

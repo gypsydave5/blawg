@@ -56,7 +56,7 @@ func TestParse(t *testing.T) {
 		t.Error("Did not get the expected title", post.Title)
 	}
 
-	var timeFormat = "2006-01-02 15:04:05"
+	var timeFormat = DateFormat
 	expectedDate, err := time.Parse(timeFormat, "2016-10-15 23:24:01")
 
 	if post.Date != expectedDate {
