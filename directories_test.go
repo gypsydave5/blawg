@@ -4,19 +4,12 @@ import (
 	"testing"
 	"time"
 	"os"
-	"fmt"
 )
 
-func TestBuildPostPath(t *testing.T) {
-	publishTime := time.Date(1066, 5, 22, 7, 8, 9, 1, time.Local)
+var testSiteDirectory = "test-site-directory"
 
-	post := Post{
-		Body: nil,
-		Date: publishTime,
-		Metadata: Metadata{
-			Title: "The Post Title",
-		},
-	}
+func TestBuildPostPath(t *testing.T) {
+	post := testPost()
 
 	expectedPath := "1066/5/22/the-post-title/"
 	calculatedPath := post.Path()
@@ -26,18 +19,9 @@ func TestBuildPostPath(t *testing.T) {
 	}
 }
 
+
 func TestSavePost(t *testing.T) {
-	publishTime := time.Date(1066, 5, 22, 7, 8, 9, 1, time.Local)
-
-	post := Post{
-		Body: nil,
-		Date: publishTime,
-		Metadata: Metadata{
-			Title: "The Post Title",
-		},
-	}
-
-	testSiteDirectory := "test-site-directory"
+	post := testPost()
 
 	err := os.MkdirAll(testSiteDirectory, os.FileMode(0777))
 	if err != nil {
@@ -50,15 +34,60 @@ func TestSavePost(t *testing.T) {
 	}
 
 	expectedFile := testSiteDirectory + "/posts/" + post.Path() + "index.html"
-	fmt.Println(expectedFile)
+	testFileExists(t, expectedFile)
 
-	_, err = os.Stat(expectedFile)
-	if err != nil {
-		t.Errorf("Could not find generated post file: %s", err)
+	teardown(t)
+}
+
+func TestExportPosts(t *testing.T) {
+	postOne := testPost()
+
+	publishTimeTwo := time.Date(1979, 12, 5, 7, 8, 9, 1, time.Local)
+	postTwo := Post{
+		Date: publishTimeTwo,
+		Metadata: Metadata{
+			Title: "Post Number One",
+		},
 	}
 
-	err = os.RemoveAll(testSiteDirectory)
+	posts := []Post{postOne, postTwo}
+
+	err := ExportAll(testSiteDirectory, posts)
 	if err != nil {
-		t.Errorf("Could not delete test directory", err)
+		t.Errorf("Could not create the post %s", err)
 	}
+
+	expectedFileOne := testSiteDirectory + "/posts/" + postOne.Path() + "index.html"
+	testFileExists(t, expectedFileOne)
+
+	expectedFileTwo := testSiteDirectory + "/posts/" + postTwo.Path() + "index.html"
+	testFileExists(t, expectedFileTwo)
+
+	teardown(t)
+}
+
+func testFileExists(t *testing.T, pathToFile string) {
+	_, err := os.Stat(pathToFile)
+	if err != nil {
+		t.Errorf("Could not find file: %s", err)
+	}
+}
+
+func teardown(t *testing.T) {
+	err := os.RemoveAll(testSiteDirectory)
+	if err != nil {
+		t.Errorf("Could not delete test directory: %s", err)
+	}
+}
+
+func testPost() Post {
+	publishTime := time.Date(1066, 5, 22, 7, 8, 9, 1, time.Local)
+	post := Post{
+		Body: nil,
+		Date: publishTime,
+		Metadata: Metadata{
+			Title: "The Post Title",
+		},
+	}
+	return post
 }

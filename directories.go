@@ -20,3 +20,13 @@ func Export(siteDirectory string, post Post) error {
 	defer file.Close()
 	return err
 }
+
+func ExportAll(siteDirectory string, posts []Post) error {
+	for _, post := range posts {
+		err := Export(siteDirectory, post)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
