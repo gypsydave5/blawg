@@ -9,9 +9,9 @@ import (
 var testSiteDirectory = "test-site-directory"
 
 func TestBuildPostPath(t *testing.T) {
-	post := testPost()
+	post := testPostOne()
 
-	expectedPath := "1066/5/22/the-post-title/"
+	expectedPath := "1066/5/22/post-number-one/"
 	calculatedPath := post.Path()
 
 	if calculatedPath != expectedPath {
@@ -19,9 +19,36 @@ func TestBuildPostPath(t *testing.T) {
 	}
 }
 
+func TestMultiplePostPaths(t *testing.T) {
+	posts := []Post{testPostOne(), testPostTwo()}
+
+	paths := paths(posts)
+
+	expectedPathOne := "1066/5/22/post-number-one/"
+	expectedPathTwo := "1979/12/5/post-number-two/"
+
+	if paths[0] != expectedPathOne {
+		t.Errorf("Expected %s, got %s", expectedPathOne, paths[0])
+	}
+
+	if paths[1] != expectedPathTwo {
+		t.Errorf("Expected %s, got %s", expectedPathTwo, paths[1])
+	}
+}
+
+func paths(posts []Post) []string {
+	var paths []string
+
+	for _, post := range posts {
+		paths = append(paths, post.Path())
+	}
+
+	return paths
+}
+
 
 func TestSavePost(t *testing.T) {
-	post := testPost()
+	post := testPostOne()
 
 	err := os.MkdirAll(testSiteDirectory, os.FileMode(0777))
 	if err != nil {
@@ -40,15 +67,9 @@ func TestSavePost(t *testing.T) {
 }
 
 func TestExportPosts(t *testing.T) {
-	postOne := testPost()
+	postOne := testPostOne()
 
-	publishTimeTwo := time.Date(1979, 12, 5, 7, 8, 9, 1, time.Local)
-	postTwo := Post{
-		Date: publishTimeTwo,
-		Metadata: Metadata{
-			Title: "Post Number One",
-		},
-	}
+	postTwo := testPostTwo()
 
 	posts := []Post{postOne, postTwo}
 
@@ -80,14 +101,25 @@ func teardown(t *testing.T) {
 	}
 }
 
-func testPost() Post {
+func testPostOne() Post {
 	publishTime := time.Date(1066, 5, 22, 7, 8, 9, 1, time.Local)
 	post := Post{
 		Body: nil,
 		Date: publishTime,
 		Metadata: Metadata{
-			Title: "The Post Title",
+			Title: "Post Number One",
 		},
 	}
 	return post
+}
+
+func testPostTwo() Post {
+	publishTimeTwo := time.Date(1979, 12, 5, 7, 8, 9, 1, time.Local)
+	postTwo := Post{
+		Date: publishTimeTwo,
+		Metadata: Metadata{
+			Title: "Post Number Two",
+		},
+	}
+	return postTwo
 }
