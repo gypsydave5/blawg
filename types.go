@@ -14,3 +14,4 @@ type Metadata struct {
 	Date       string   `yaml:"date"`
 	Categories []string `yaml:"categories"`
 }
+

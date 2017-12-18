@@ -55,7 +55,7 @@ func TestSavePost(t *testing.T) {
 		t.Errorf("Could not create the test directory %s", err)
 	}
 
-	err = Export(testSiteDirectory, post)
+	err = Export(testSiteDirectory, &post, nil)
 	if err != nil {
 		t.Errorf("Could not create the post %s", err)
 	}
@@ -73,7 +73,7 @@ func TestExportPosts(t *testing.T) {
 
 	posts := []Post{postOne, postTwo}
 
-	err := ExportAll(testSiteDirectory, posts)
+	err := ExportAll(testSiteDirectory, &posts)
 	if err != nil {
 		t.Errorf("Could not create the post %s", err)
 	}
