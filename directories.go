@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 	"os"
-	"html/template"
 )
 
 func(post Post) Path() string {
@@ -24,8 +23,6 @@ func Export(siteDirectory string, post *Post, posts *[]Post) error {
 }
 
 func ExportAll(siteDirectory string, posts *[]Post) error {
-	t, err := template.New("page").ParseFiles("template.html")
-
 	for _, post := range *posts {
 		err := Export(siteDirectory, &post, posts)
 		if err != nil {

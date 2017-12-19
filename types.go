@@ -15,3 +15,7 @@ type Metadata struct {
 	Categories []string `yaml:"categories"`
 }
 
+type Page struct {
+	Post Post
+	PostList *[]Post
+}

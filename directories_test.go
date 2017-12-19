@@ -46,7 +46,6 @@ func paths(posts []Post) []string {
 	return paths
 }
 
-
 func TestSavePost(t *testing.T) {
 	post := testPostOne()
 
@@ -63,7 +62,7 @@ func TestSavePost(t *testing.T) {
 	expectedFile := testSiteDirectory + "/posts/" + post.Path() + "index.html"
 	testFileExists(t, expectedFile)
 
-	teardown(t)
+	tearDown(t)
 }
 
 func TestExportPosts(t *testing.T) {
@@ -84,7 +83,7 @@ func TestExportPosts(t *testing.T) {
 	expectedFileTwo := testSiteDirectory + "/posts/" + postTwo.Path() + "index.html"
 	testFileExists(t, expectedFileTwo)
 
-	teardown(t)
+	tearDown(t)
 }
 
 func testFileExists(t *testing.T, pathToFile string) {
@@ -94,10 +93,21 @@ func testFileExists(t *testing.T, pathToFile string) {
 	}
 }
 
-func teardown(t *testing.T) {
+func tearDown(t *testing.T) {
 	err := os.RemoveAll(testSiteDirectory)
 	if err != nil {
 		t.Errorf("Could not delete test directory: %s", err)
+	}
+}
+
+func testPost(title, body string, year, month, day int) Post {
+	publishTime := time.Date(year, time.Month(month), day, 7, 8, 9, 1, time.Local)
+	return Post{
+		Body: []byte(body),
+		Date: publishTime,
+		Metadata: Metadata{
+			Title: title,
+		},
 	}
 }
 

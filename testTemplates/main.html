@@ -1,0 +1,14 @@
+{{define "main"}}
+{{template "post" .Post}}
+{{template "postlist" .PostList}}
+{{end}}
+
+{{define "postlist"}}
+<ul>
+{{range .}}<li><a href="/post/{{.Path}}">{{.Title}}</a></li>{{end}}
+</ul>
+{{end}}
+{{define "post"}}
+<h1>{{.Title}}</h1>
+<time datetime="{{.Date}}">{{.Date}}</time>
+{{end}}
