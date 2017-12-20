@@ -1,9 +1,12 @@
 package blawg
 
-import "time"
+import (
+	"time"
+	"html/template"
+)
 
 type Post struct {
-	Body []byte
+	Body template.HTML
 	Date time.Time
 	Metadata
 }
@@ -16,6 +19,6 @@ type Metadata struct {
 }
 
 type Page struct {
-	Post Post
+	Post *Post
 	PostList *[]Post
 }

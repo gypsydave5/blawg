@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 	"os"
+	"html/template"
 )
 
 var testSiteDirectory = "test-site-directory"
@@ -54,7 +55,7 @@ func TestSavePost(t *testing.T) {
 		t.Errorf("Could not create the test directory %s", err)
 	}
 
-	err = Export(testSiteDirectory, &post, nil)
+	err = Export(testSiteDirectory, &post, nil, stubTemplate())
 	if err != nil {
 		t.Errorf("Could not create the post %s", err)
 	}
@@ -72,7 +73,7 @@ func TestExportPosts(t *testing.T) {
 
 	posts := []Post{postOne, postTwo}
 
-	err := ExportAll(testSiteDirectory, &posts)
+	err := ExportAll(testSiteDirectory, &posts, stubTemplate())
 	if err != nil {
 		t.Errorf("Could not create the post %s", err)
 	}
@@ -103,7 +104,7 @@ func tearDown(t *testing.T) {
 func testPost(title, body string, year, month, day int) Post {
 	publishTime := time.Date(year, time.Month(month), day, 7, 8, 9, 1, time.Local)
 	return Post{
-		Body: []byte(body),
+		Body: template.HTML(body),
 		Date: publishTime,
 		Metadata: Metadata{
 			Title: title,
@@ -114,7 +115,6 @@ func testPost(title, body string, year, month, day int) Post {
 func testPostOne() Post {
 	publishTime := time.Date(1066, 5, 22, 7, 8, 9, 1, time.Local)
 	post := Post{
-		Body: nil,
 		Date: publishTime,
 		Metadata: Metadata{
 			Title: "Post Number One",
@@ -133,3 +133,9 @@ func testPostTwo() Post {
 	}
 	return postTwo
 }
+
+func stubTemplate() (mainTemplate *template.Template) {
+	mainTemplate, _ = template.New("main").Parse("")
+	return
+}
+

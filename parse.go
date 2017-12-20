@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"gopkg.in/yaml.v2"
+	"html/template"
 )
 
 const DateFormat = "2006-01-02 15:04:05"
@@ -21,7 +22,7 @@ func Parse(rawPage io.Reader) (*Post, error) {
 		return page, err
 	}
 	addMeta(rawMeta, page)
-	page.Body = blackfriday.Run(body)
+	page.Body = template.HTML(blackfriday.Run(body))
 	return page, nil
 }
 
