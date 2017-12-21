@@ -6,7 +6,12 @@ import (
 	"bytes"
 	"strings"
 	"io/ioutil"
+	"os"
 )
+
+var testSiteDirectory = "test-site-directory"
+var testPostOne = testPost("Post Number One", "", 1066, 5, 22)
+var testPostTwo = testPost("Post Number Two", "", 1979, 12, 5)
 
 func TestTemplate(t *testing.T) {
 	assert := Assertions{t}
@@ -27,11 +32,11 @@ func TestTemplate(t *testing.T) {
 	}
 
 	s := b.String()
-	assert.stringContains(s, "<h1>Main Post Here</h1>")
-	assert.stringContains(s, `<li><a href="/post/1979/12/5/first-post/">First Post</a></li>`)
-	assert.stringContains(s, `<li><a href="/post/1989/12/5/second-post/">Second Post</a></li>`)
-	assert.stringContains(s, `<p>main post body</p>`)
-	assert.stringContains(s, `<time datetime="1984-06-06T07:08" >Jun 06, 1984</time>`)
+	assert.StringContains(s, "<h1>Main Post Here</h1>")
+	assert.StringContains(s, `<li><a href="/post/1979/12/5/first-post/">First Post</a></li>`)
+	assert.StringContains(s, `<li><a href="/post/1989/12/5/second-post/">Second Post</a></li>`)
+	assert.StringContains(s, `<p>main post body</p>`)
+	assert.StringContains(s, `<time datetime="1984-06-06T07:08" >Jun 06, 1984</time>`)
 }
 
 func TestMakePosts(t *testing.T) {
@@ -44,35 +49,71 @@ func TestMakePosts(t *testing.T) {
 	}
 
 	mainTemplate, err := template.New("main").Parse(`<p>{{.Post.Title}}</p>"`)
-	assert.notError(err)
+	assert.NotError(err)
 
 	MakePosts(testSiteDirectory, &posts, mainTemplate)
 
-	expectedFileOne := testSiteDirectory + "/posts/" + postOne.Path() + "index.html"
-	testFileExists(t, expectedFileOne)
+	for _, post := range posts {
+		expectedFile := testSiteDirectory + "/posts/" + post.Path() + "index.html"
+		assert.FileExists(expectedFile)
+		contents, _ := ioutil.ReadFile(expectedFile)
 
-	contents, _ := ioutil.ReadFile(expectedFileOne)
-
-	assert.stringContains(string(contents), postOne.Title)
+		assert.StringContains(string(contents), post.Title)
+	}
 
 	tearDown(t)
 }
 
-func MakePosts(siteDirectory string, posts *[]Post, tmplt *template.Template) (err error) {
-	for _, post := range *posts {
-		err = Export(siteDirectory, &post, posts, tmplt)
-		if err != nil {
-			return
-		}
-	}
-	return
+func TestBuildPostPath(t *testing.T) {
+	assert := Assertions{t}
+	post := testPostOne
+
+	expectedPath := "1066/5/22/post-number-one/"
+	calculatedPath := post.Path()
+	assert.StringsEqual(calculatedPath, expectedPath)
 }
 
-type Assertions struct{
+func TestMultiplePostPaths(t *testing.T) {
+	assert := Assertions{t}
+	posts := []Post{testPostOne, testPostTwo}
+
+	paths := paths(posts)
+
+	expectedPathOne := "1066/5/22/post-number-one/"
+	expectedPathTwo := "1979/12/5/post-number-two/"
+
+	assert.StringsEqual(paths[0], expectedPathOne)
+	assert.StringsEqual(paths[1], expectedPathTwo)
+}
+
+func TestSavePost(t *testing.T) {
+	assert := Assertions{t}
+	post := testPostOne
+
+	err := os.MkdirAll(testSiteDirectory, os.FileMode(0777))
+	assert.NotError(err)
+
+	err = Export(testSiteDirectory, &post, nil, stubTemplate())
+	assert.NotError(err)
+
+	expectedFile := testSiteDirectory + "/posts/" + post.Path() + "index.html"
+	assert.FileExists(expectedFile)
+
+	tearDown(t)
+}
+
+func tearDown(t *testing.T) {
+	err := os.RemoveAll(testSiteDirectory)
+	if err != nil {
+		t.Errorf("Could not delete test directory: %s", err)
+	}
+}
+
+type Assertions struct {
 	test *testing.T
 }
 
-func (a Assertions) stringContains(str, substr string) {
+func (a Assertions) StringContains(str, substr string) {
 	if !strings.Contains(str, substr) {
 		a.test.Errorf(`Expected to find
 %s
@@ -82,8 +123,21 @@ in
 	}
 }
 
-func (a Assertions) notError(err error) {
+func (a Assertions) StringsEqual(str1, str2 string) {
+	if str1 != str2 {
+		a.test.Errorf("Expected '%s' to equal '%s'", str1, str2)
+	}
+}
+
+func (a Assertions) NotError(err error) {
 	if err != nil {
 		a.test.Errorf("unexpected error: %s", err)
+	}
+}
+
+func (a Assertions) FileExists(pathToFile string) {
+	_, err := os.Stat(pathToFile)
+	if err != nil {
+		a.test.Errorf("Could not find file: %s", err)
 	}
 }
