@@ -27,6 +27,10 @@ func MakePosts(siteDirectory string, posts *[]Post, tmplt *template.Template) (e
 }
 
 func Export(siteDirectory string, post *Post, posts *[]Post, tmplt *template.Template) error {
+	if !post.Published {
+		return nil
+	}
+
 	path := fmt.Sprintf("%s/posts/%s", siteDirectory, post.Path())
 	os.MkdirAll(path, os.FileMode(0777))
 	fileName := fmt.Sprintf("%sindex.html", path)

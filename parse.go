@@ -17,8 +17,10 @@ import (
 
 const DateFormat = "2006-01-02 15:04:05"
 
-var markdownExtensions = blackfriday.WithExtensions(blackfriday.Footnotes |
-	blackfriday.CommonExtensions)
+var markdownExtensions = blackfriday.WithExtensions(
+	blackfriday.Footnotes |
+	blackfriday.CommonExtensions,
+	)
 
 func Parse(rawPage io.Reader) (*Post, error) {
 	post := new(Post)

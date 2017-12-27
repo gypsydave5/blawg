@@ -101,6 +101,23 @@ func TestSavePost(t *testing.T) {
 	tearDownTestSite(t)
 }
 
+func TestNotSavingUnpublishedPost(t *testing.T) {
+	assert := NewAssertions(t)
+	post := testPost("do not publish me","",1901, 1,1)
+	post.Published = false
+
+	err := os.MkdirAll(testSiteDirectory, os.FileMode(0777))
+	assert.NotError(err)
+
+	err = Export(testSiteDirectory, &post, nil, stubTemplate())
+	assert.NotError(err)
+
+	unexpectedFile := testSiteDirectory + "/posts/" + post.Path() + "index.html"
+	assert.FileDoesNotExist(unexpectedFile)
+
+	tearDownTestSite(t)
+}
+
 func tearDownTestSite(t *testing.T) {
 	err := os.RemoveAll(testSiteDirectory)
 	if err != nil {
@@ -125,6 +142,7 @@ func testPost(title, body string, year, month, day int) Post {
 		Date: publishTime,
 		Metadata: Metadata{
 			Title: title,
+			Published: true,
 		},
 	}
 }

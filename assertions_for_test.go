@@ -24,6 +24,12 @@ in
 	}
 }
 
+func (a Assertions) True(b bool, s string) {
+	if !b {
+		a.test.Errorf(s)
+	}
+}
+
 func (a Assertions) StringsEqual(str1, str2 string) {
 	if str1 != str2 {
 		a.test.Errorf("Expected '%s' to equal '%s'", str1, str2)
@@ -36,13 +42,27 @@ func (a Assertions) NotError(err error) {
 	}
 }
 
+func (a Assertions) ErrorMessage(err error, message string) {
+	actual := err.Error()
+	if actual != message {
+		a.test.Errorf("expected error message '%s' but got '%s'", message, actual)
+	}
+}
+
 func (a Assertions) FileExists(pathToFile string) {
 	_, err := os.Stat(pathToFile)
-	if err != nil {
-		a.test.Errorf("Could not find file: %s", err)
+	if os.IsNotExist(err) {
+		a.test.Errorf("Expected file '%s' to exist", pathToFile)
 	}
 }
 
 func (a Assertions) DirectoryExists(pathToDirectory string) {
 	a.FileExists(pathToDirectory)
+}
+
+func (a Assertions) FileDoesNotExist(pathToFile string) {
+	_, err := os.Stat(pathToFile)
+	if err == nil {
+		a.test.Errorf("Expected file '%s' not to exist", pathToFile)
+	}
 }
