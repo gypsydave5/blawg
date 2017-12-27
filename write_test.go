@@ -92,7 +92,7 @@ func TestSavePost(t *testing.T) {
 	err := os.MkdirAll(testSiteDirectory, os.FileMode(0777))
 	assert.NotError(err)
 
-	err = Export(testSiteDirectory, &post, nil, stubTemplate())
+	err = MakePost(testSiteDirectory, &post, nil, stubTemplate())
 	assert.NotError(err)
 
 	expectedFile := testSiteDirectory + "/posts/" + post.Path() + "index.html"
@@ -109,7 +109,7 @@ func TestNotSavingUnpublishedPost(t *testing.T) {
 	err := os.MkdirAll(testSiteDirectory, os.FileMode(0777))
 	assert.NotError(err)
 
-	err = Export(testSiteDirectory, &post, nil, stubTemplate())
+	err = MakePost(testSiteDirectory, &post, nil, stubTemplate())
 	assert.NotError(err)
 
 	unexpectedFile := testSiteDirectory + "/posts/" + post.Path() + "index.html"

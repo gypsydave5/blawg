@@ -18,7 +18,7 @@ func WritePost(w io.Writer, post *Post, posts *[]Post, template *template.Templa
 
 func MakePosts(siteDirectory string, posts *[]Post, tmplt *template.Template) (err error) {
 	for _, post := range *posts {
-		err = Export(siteDirectory, &post, posts, tmplt)
+		err = MakePost(siteDirectory, &post, posts, tmplt)
 		if err != nil {
 			return
 		}
@@ -26,7 +26,7 @@ func MakePosts(siteDirectory string, posts *[]Post, tmplt *template.Template) (e
 	return
 }
 
-func Export(siteDirectory string, post *Post, posts *[]Post, tmplt *template.Template) error {
+func MakePost(siteDirectory string, post *Post, posts *[]Post, tmplt *template.Template) error {
 	if !post.Published {
 		return nil
 	}
