@@ -57,21 +57,13 @@ or here`
 }
 
 func TestParse(t *testing.T) {
+	assert := NewAssertions(t)
 	post, err := Parse(strings.NewReader(rawPost))
-	if err != nil {
-		t.Error(err)
-	}
+	assert.NotError(err)
+	assert.StringsEqual(post.Layout, "post")
+	assert.StringsEqual(post.Title, "example post")
 
-	if post.Layout != "post" {
-		t.Error("Did not get expected layout", post.Layout)
-	}
-
-	if post.Title != "example post" {
-		t.Error("Did not get the expected title", post.Title)
-	}
-
-	var timeFormat = DateFormat
-	expectedDate, err := time.Parse(timeFormat, "2016-10-15 23:24:01")
+	expectedDate, err := time.Parse(DateFormat, "2016-10-15 23:24:01")
 
 	if post.Date != expectedDate {
 		t.Error("Did not get the expected date", post.Date)
@@ -81,17 +73,13 @@ func TestParse(t *testing.T) {
 		t.Error("Did not get the expected categories", post.Categories)
 	}
 
-	if post.Published != true {
-		t.Error("Expected post to be published")
-	}
+	assert.True(post.Published, "expected post to be published")
 
 	var expectedHTML = `<p>This is the body of the post</p>
 
 <h2>A sub header</h2>
 `
-	if string(post.Body) != expectedHTML {
-		t.Error("Did not get expected body", post.Body)
-	}
+	assert.StringsEqual(string(post.Body), expectedHTML)
 }
 
 func TestMetadataParseError(t *testing.T) {
