@@ -11,19 +11,28 @@ import (
 
 	"gopkg.in/yaml.v2"
 	"html/template"
+	"os"
+	"path/filepath"
 )
 
 const DateFormat = "2006-01-02 15:04:05"
 
+var markdownExtensions = blackfriday.WithExtensions(blackfriday.Footnotes |
+	blackfriday.CommonExtensions)
+
 func Parse(rawPage io.Reader) (*Post, error) {
-	page := new(Post)
+	post := new(Post)
 	rawMeta, body, err := split(rawPage)
+
 	if err != nil {
-		return page, err
+		return post, err
 	}
-	addMeta(rawMeta, page)
-	page.Body = template.HTML(blackfriday.Run(body))
-	return page, nil
+
+	addMeta(rawMeta, post)
+
+	postHTML := blackfriday.Run(body, markdownExtensions)
+	post.Body = template.HTML(postHTML)
+	return post, nil
 }
 
 func split(page io.Reader) (meta, body []byte, err error) {
@@ -56,7 +65,7 @@ func split(page io.Reader) (meta, body []byte, err error) {
 	return m.Bytes(), b.Bytes(), nil
 }
 
-func addMeta(rawMeta []byte, page *Post) (err error) {
+func addMeta(rawMeta []byte, post *Post) (err error) {
 	meta := Metadata{}
 
 	err = yaml.Unmarshal(rawMeta, &meta)
@@ -69,8 +78,36 @@ func addMeta(rawMeta []byte, page *Post) (err error) {
 		return err
 	}
 
-	page.Date = date
-	page.Metadata = meta
+	post.Date = date
+	post.Metadata = meta
 
 	return
+}
+
+func GetTemplates(templateDirectory string) (*template.Template, error) {
+	return template.ParseGlob(templateDirectory + "/**")
+}
+
+func GetPosts(postDir string) (posts []Post, err error) {
+	err = filepath.Walk(postDir, func(path string, fileInfo os.FileInfo, err error) error {
+		if fileInfo.IsDir() {
+			return nil
+		}
+
+		f, err := os.Open(path)
+		if err != nil {
+			return err
+		}
+
+		defer f.Close()
+
+		post, err := Parse(f)
+		if err != nil {
+			return errors.New(fmt.Sprintf("error parsing post %s : %s", fileInfo.Name(), err))
+		}
+		posts = append(posts, *post)
+		return err
+	})
+
+	return posts, err
 }
