@@ -43,6 +43,11 @@ func (a Assertions) NotError(err error) {
 }
 
 func (a Assertions) ErrorMessage(err error, message string) {
+	if err == nil {
+		a.test.Errorf("expected an error, but received nil")
+		return
+	}
+
 	actual := err.Error()
 	if actual != message {
 		a.test.Errorf("expected error message '%s' but got '%s'", message, actual)

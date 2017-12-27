@@ -12,6 +12,6 @@ var postDirectory = "_posts"
 func main() {
 	err := blawg.MakeBlog(postDirectory, templateDirectory, siteDirectory)
 	if err != nil {
-		log.Fatalf("Something went very wrong %s", err)
+		log.Fatalf("%s", err)
 	}
 }

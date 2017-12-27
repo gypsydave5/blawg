@@ -30,7 +30,11 @@ func Parse(rawPage io.Reader) (*Post, error) {
 		return post, err
 	}
 
-	addMeta(rawMeta, post)
+	err = addMeta(rawMeta, post)
+
+	if err != nil {
+		return post, err
+	}
 
 	postHTML := blackfriday.Run(body, markdownExtensions)
 	post.Body = template.HTML(postHTML)
@@ -105,7 +109,7 @@ func GetPosts(postDir string) (posts []Post, err error) {
 
 		post, err := Parse(f)
 		if err != nil {
-			return errors.New(fmt.Sprintf("error parsing post %s : %s", fileInfo.Name(), err))
+			return errors.New(fmt.Sprintf("error parsing post %s : \n\t%s", fileInfo.Name(), err))
 		}
 		posts = append(posts, *post)
 		return err

@@ -22,6 +22,20 @@ This is the body of the post
 ## A sub header
 `
 
+var badMetadata = `---
+layout: post
+title: "example post"
+date: 2016-10-15T23:24:01
+categories:
+    - category1
+    - category2
+published: true
+---
+This is the body of the post
+
+## A sub header
+`
+
 func TestSplitNoMeta(t *testing.T) {
 	_, err := Parse(strings.NewReader(`no meta block here!`))
 
@@ -78,4 +92,10 @@ func TestParse(t *testing.T) {
 	if string(post.Body) != expectedHTML {
 		t.Error("Did not get expected body", post.Body)
 	}
+}
+
+func TestMetadataParseError(t *testing.T) {
+	assert := NewAssertions(t)
+	_, err := Parse(strings.NewReader(badMetadata))
+	assert.ErrorMessage(err, `parsing time "2016-10-15T23:24:01" as "2006-01-02 15:04:05": cannot parse "T23:24:01" as " "`)
 }
