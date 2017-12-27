@@ -67,6 +67,10 @@ func TestParse(t *testing.T) {
 		t.Error("Did not get the expected categories", post.Categories)
 	}
 
+	if post.Published != true {
+		t.Error("Expected post to be published")
+	}
+
 	var expectedHTML = `<p>This is the body of the post</p>
 
 <h2>A sub header</h2>

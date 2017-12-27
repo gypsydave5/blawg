@@ -23,8 +23,8 @@ func (ps Posts) Swap(i, j int) {
 }
 
 type Post struct {
-	Body  template.HTML
-	Date  time.Time
+	Body template.HTML
+	Date time.Time
 	Metadata
 }
 
@@ -49,6 +49,7 @@ type Metadata struct {
 	Layout     string   `yaml:"layout"`
 	Date       string   `yaml:"date"`
 	Categories []string `yaml:"categories"`
+	Published  bool     `yaml:"published"`
 }
 
 type Page struct {

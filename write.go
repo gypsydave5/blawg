@@ -1,9 +1,9 @@
 package blawg
 
 import (
+	"fmt"
 	"html/template"
 	"io"
-	"fmt"
 	"os"
 )
 
