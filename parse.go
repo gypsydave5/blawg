@@ -5,8 +5,10 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"golang.org/x/net/html"
 	"gopkg.in/russross/blackfriday.v2"
 	"io"
+	"strings"
 	"time"
 
 	"gopkg.in/yaml.v2"
@@ -19,8 +21,8 @@ const DateFormat = "2006-01-02 15:04:05"
 
 var markdownExtensions = blackfriday.WithExtensions(
 	blackfriday.Footnotes |
-	blackfriday.CommonExtensions,
-	)
+		blackfriday.CommonExtensions,
+)
 
 func Parse(rawPage io.Reader) (*Post, error) {
 	post := new(Post)
@@ -38,7 +40,31 @@ func Parse(rawPage io.Reader) (*Post, error) {
 
 	postHTML := blackfriday.Run(body, markdownExtensions)
 	post.Body = template.HTML(postHTML)
+	post.TitleText, _ = textTitle(post)
 	return post, nil
+}
+
+func textTitle(p *Post) (string, error) {
+	n, err := html.Parse(strings.NewReader(p.Title))
+	if err != nil {
+		return "", err
+	}
+
+	text := ""
+
+	var f func(*html.Node)
+	f = func(n *html.Node) {
+		if n.Type == html.TextNode {
+			text = text + n.Data
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			f(c)
+		}
+	}
+
+	f(n)
+
+	return text, nil
 }
 
 func split(page io.Reader) (meta, body []byte, err error) {

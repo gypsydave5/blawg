@@ -8,6 +8,12 @@
   revision = "86672fcb3f950f35f2e675df2240550f2a50762f"
 
 [[projects]]
+  branch = "master"
+  name = "golang.org/x/net"
+  packages = ["html","html/atom"]
+  revision = "d866cfc389cec985d6fda2859936a575a55a3ab6"
+
+[[projects]]
   name = "gopkg.in/russross/blackfriday.v2"
   packages = ["."]
   revision = "cadec560ec52d93835bf2f15bd794700d3a2473b"
@@ -22,6 +28,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2fc3682476b43555c7f441d52d71bc19a0f0d4bafed47983a666ef5a53348223"
+  inputs-digest = "266a88862e77e53ef27e1f317621d594d6e21441b9de54e3ceef9ffb6fb466a9"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -25,6 +25,7 @@ func (ps Posts) Swap(i, j int) {
 type Post struct {
 	Body template.HTML
 	Date time.Time
+	TitleText string
 	Metadata
 }
 

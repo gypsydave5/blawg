@@ -1,6 +1,7 @@
 package blawg
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 	"testing"
@@ -80,6 +81,20 @@ func TestParse(t *testing.T) {
 <h2>A sub header</h2>
 `
 	assert.StringsEqual(string(post.Body), expectedHTML)
+}
+
+func TestTitleTextParse(t *testing.T) {
+	assert := NewAssertions(t)
+	titleWithHTML := "the <em>title</em>"
+	rawPost := fmt.Sprintf(`---
+title: %s
+date: 2016-10-15 23:24:01
+---`, titleWithHTML)
+
+	post, err := Parse(strings.NewReader(rawPost))
+	assert.NotError(err)
+	assert.StringsEqual(post.Title, titleWithHTML)
+	assert.StringsEqual(post.TitleText, "the title")
 }
 
 func TestMetadataParseError(t *testing.T) {
