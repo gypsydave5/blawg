@@ -2,6 +2,7 @@ package blawg
 
 import (
 	"fmt"
+	"html/template"
 	"reflect"
 	"strings"
 	"testing"
@@ -62,7 +63,7 @@ func TestParse(t *testing.T) {
 	post, err := Parse(strings.NewReader(rawPost))
 	assert.NotError(err)
 	assert.StringsEqual(post.Layout, "post")
-	assert.StringsEqual(post.Title, "example post")
+	assert.StringsEqual(string(post.Title), "example post")
 
 	expectedDate, err := time.Parse(DateFormat, "2016-10-15 23:24:01")
 
@@ -85,7 +86,7 @@ func TestParse(t *testing.T) {
 
 func TestTitleTextParse(t *testing.T) {
 	assert := NewAssertions(t)
-	titleWithHTML := "the <em>title</em>"
+	titleWithHTML := "the _title_<h1>is BIG</h1>"
 	rawPost := fmt.Sprintf(`---
 title: %s
 date: 2016-10-15 23:24:01
@@ -93,8 +94,11 @@ date: 2016-10-15 23:24:01
 
 	post, err := Parse(strings.NewReader(rawPost))
 	assert.NotError(err)
-	assert.StringsEqual(post.Title, titleWithHTML)
-	assert.StringsEqual(post.TitleText, "the title")
+	if post.Title != template.HTML("the <em>title</em><h1>is BIG</h1>") {
+		t.Errorf("did not get the expected title HTML, %s", post.Title)
+	}
+
+	assert.StringsEqual(post.TitleText, "the title is BIG")
 }
 
 func TestMetadataParseError(t *testing.T) {

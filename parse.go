@@ -40,31 +40,45 @@ func Parse(rawPage io.Reader) (*Post, error) {
 
 	postHTML := blackfriday.Run(body, markdownExtensions)
 	post.Body = template.HTML(postHTML)
+
+	post.Title = htmlTitle(post.Metadata.Title)
 	post.TitleText, _ = textTitle(post)
 	return post, nil
 }
 
+func htmlTitle(s string) template.HTML {
+	title := blackfriday.Run([]byte(s), markdownExtensions)
+	titleWithoutPtags := title[3:len(title) - 5]
+	return template.HTML(titleWithoutPtags)
+}
+
 func textTitle(p *Post) (string, error) {
-	n, err := html.Parse(strings.NewReader(p.Title))
+	var text string
+	n, err := html.Parse(strings.NewReader(string(p.Title)))
+
 	if err != nil {
-		return "", err
+		return text, err
 	}
 
-	text := ""
+	text = nodeTextContent(n)
+	return text, nil
+}
 
-	var f func(*html.Node)
-	f = func(n *html.Node) {
+func nodeTextContent(n *html.Node) string {
+	var text []string
+	var extractText func(*html.Node)
+
+	extractText = func(n *html.Node) {
 		if n.Type == html.TextNode {
-			text = text + n.Data
+			text = append(text, strings.TrimSpace(n.Data))
 		}
 		for c := n.FirstChild; c != nil; c = c.NextSibling {
-			f(c)
+			extractText(c)
 		}
 	}
 
-	f(n)
-
-	return text, nil
+	extractText(n)
+	return strings.Join(text, " ")
 }
 
 func split(page io.Reader) (meta, body []byte, err error) {
@@ -126,17 +140,22 @@ func GetPosts(postDir string) (posts []Post, err error) {
 			return nil
 		}
 
-		f, err := os.Open(path)
+		file, err := os.Open(path)
 		if err != nil {
 			return err
 		}
 
-		defer f.Close()
+		defer file.Close()
 
-		post, err := Parse(f)
+		post, err := Parse(file)
 		if err != nil {
 			return errors.New(fmt.Sprintf("error parsing post %s : \n\t%s", fileInfo.Name(), err))
 		}
+
+		if !post.Published {
+			return nil
+		}
+
 		posts = append(posts, *post)
 		return err
 	})

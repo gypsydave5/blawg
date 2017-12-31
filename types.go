@@ -24,13 +24,14 @@ func (ps Posts) Swap(i, j int) {
 
 type Post struct {
 	Body template.HTML
+	Title template.HTML
 	Date time.Time
 	TitleText string
 	Metadata
 }
 
 func (p *Post) Path() string {
-	postPathTitle := lowerKebabCase(p.Title)
+	postPathTitle := lowerKebabCase(p.TitleText)
 	postPath := fmt.Sprintf(
 		"%d/%d/%d/%s/",
 		p.Date.Year(),

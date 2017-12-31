@@ -57,7 +57,7 @@ func TestMakePosts(t *testing.T) {
 		assert.FileExists(expectedFile)
 		contents, _ := ioutil.ReadFile(expectedFile)
 
-		assert.StringContains(string(contents), post.Title)
+		assert.StringContains(string(contents), string(post.Title))
 	}
 
 	tearDownTestSite(t)
