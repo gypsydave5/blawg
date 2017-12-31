@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "(Even More) Memoization in JavaScript"
+title: "post one"
 date: 2016-03-28 00:01:36
 tags:
     - JavaScript

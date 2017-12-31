@@ -8,6 +8,8 @@ func MakeBlog(postDirectory, templateDirectory, siteDirectory string) error {
 		return err
 	}
 
+	SortPostsByDate(posts)
+
 	t, err := GetTemplates(templateDirectory)
 	if err != nil {
 		return err

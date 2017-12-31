@@ -20,8 +20,7 @@ import (
 const DateFormat = "2006-01-02 15:04:05"
 
 var markdownExtensions = blackfriday.WithExtensions(
-	blackfriday.Footnotes |
-		blackfriday.CommonExtensions,
+	blackfriday.Footnotes | blackfriday.CommonExtensions,
 )
 
 func Parse(rawPage io.Reader) (*Post, error) {
@@ -48,7 +47,7 @@ func Parse(rawPage io.Reader) (*Post, error) {
 
 func htmlTitle(s string) template.HTML {
 	title := blackfriday.Run([]byte(s), markdownExtensions)
-	titleWithoutPtags := title[3:len(title) - 5]
+	titleWithoutPtags := title[3:len(title)-5]
 	return template.HTML(titleWithoutPtags)
 }
 
