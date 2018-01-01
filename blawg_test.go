@@ -27,10 +27,10 @@ func TestMakeBlog(t *testing.T) {
 	post := string(file)
 
 	split := strings.Split(post, "should be first")
-	if strings.Contains(split[0], "post one") {
+	if !strings.Contains(split[0], "post one") {
 		t.Errorf("post one appears too soon")
 	}
-	if !strings.Contains(split[1], "post one") {
+	if strings.Contains(split[1], "post one") {
 		t.Errorf("post one not in second half of list")
 	}
 

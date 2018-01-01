@@ -156,7 +156,7 @@ func GetPosts(postDir string) (posts []Post, err error) {
 		}
 
 		posts = append(posts, *post)
-		return err
+		return nil
 	})
 
 	return posts, err

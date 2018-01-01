@@ -23,7 +23,7 @@ func (ps Posts) Swap(i, j int) {
 }
 
 func SortPostsByDate(p []Post) {
-	sort.Sort(Posts(p))
+	sort.Reverse(Posts(p))
 }
 
 type Post struct {

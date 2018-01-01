@@ -103,7 +103,7 @@ func TestSavePost(t *testing.T) {
 
 func TestNotSavingUnpublishedPost(t *testing.T) {
 	assert := NewAssertions(t)
-	post := testPost("do not publish me","",1901, 1,1)
+	post := testPost("do not publish me", "", 1901, 1, 1)
 	post.Published = false
 
 	err := os.MkdirAll(testSiteDirectory, os.FileMode(0777))
@@ -138,10 +138,12 @@ func paths(posts []Post) []string {
 func testPost(title, body string, year, month, day int) Post {
 	publishTime := time.Date(year, time.Month(month), day, 7, 8, 9, 1, time.Local)
 	return Post{
-		Body: template.HTML(body),
-		Date: publishTime,
+		Body:      template.HTML(body),
+		Date:      publishTime,
+		Title:     template.HTML(title),
+		TitleText: title,
 		Metadata: Metadata{
-			Title: title,
+			Title:     title,
 			Published: true,
 		},
 	}

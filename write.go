@@ -60,10 +60,11 @@ func MakeHomepage(siteDirectory string, posts *[]Post, t *template.Template) err
 		return err
 	}
 
-	firstPost := (*posts)[0]
+	recentPost := (*posts)[len(*posts) - 1]
+	println(recentPost.Title)
 
 	page := Page{
-		&firstPost,
+		&recentPost,
 		posts,
 	}
 
