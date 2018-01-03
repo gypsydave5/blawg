@@ -135,6 +135,10 @@ func GetTemplates(templateDirectory string) (*template.Template, error) {
 
 func GetPosts(postDir string) (posts []Post, err error) {
 	err = filepath.Walk(postDir, func(path string, fileInfo os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
 		if fileInfo.IsDir() {
 			return nil
 		}

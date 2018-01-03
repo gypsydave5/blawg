@@ -37,9 +37,7 @@ func MakeBlog(postDirectory, templateDirectory, extrasDirectory, siteDirectory s
 }
 
 func copyExtrasDirectoryContents(publicDirectory, siteDirectory string) (err error) {
-	_, err = filepath.Glob(publicDirectory + "/*")
-
-	filepath.Walk(publicDirectory, func(sourcePath string, info os.FileInfo, err error) error {
+	err = filepath.Walk(publicDirectory, func(sourcePath string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -76,5 +74,5 @@ func copyExtrasDirectoryContents(publicDirectory, siteDirectory string) (err err
 		return err
 	})
 
-	return
+	return err
 }
