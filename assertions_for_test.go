@@ -1,9 +1,9 @@
 package blawg
 
 import (
-	"testing"
-	"strings"
 	"os"
+	"strings"
+	"testing"
 )
 
 type Assertions struct {

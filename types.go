@@ -22,14 +22,14 @@ func (ps Posts) Swap(i, j int) {
 	ps[i], ps[j] = ps[j], ps[i]
 }
 
-func SortPostsByDate(p []Post) {
-	sort.Reverse(Posts(p))
+func SortPostsByDate(p *[]Post) {
+	sort.Sort(Posts(*p))
 }
 
 type Post struct {
-	Body template.HTML
-	Title template.HTML
-	Date time.Time
+	Body      template.HTML
+	Title     template.HTML
+	Date      time.Time
 	TitleText string
 	Metadata
 }

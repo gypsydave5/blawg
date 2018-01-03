@@ -47,7 +47,7 @@ func Parse(rawPage io.Reader) (*Post, error) {
 
 func htmlTitle(s string) template.HTML {
 	title := blackfriday.Run([]byte(s), markdownExtensions)
-	titleWithoutPtags := title[3:len(title)-5]
+	titleWithoutPtags := title[3 : len(title)-5]
 	return template.HTML(titleWithoutPtags)
 }
 
