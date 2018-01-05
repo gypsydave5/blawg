@@ -7,16 +7,16 @@ import (
 	"os"
 )
 
-func WritePost(w io.Writer, post *Post, posts *[]Post, template *template.Template) error {
+func WritePost(w io.Writer, post *Post, posts *Posts, template *template.Template) error {
 	page := Page{
-		post,
-		posts,
+		Post:     post,
+		PostList: posts,
 	}
 	err := template.ExecuteTemplate(w, "main", &page)
 	return err
 }
 
-func MakePosts(siteDirectory string, posts *[]Post, tmplt *template.Template) (err error) {
+func MakePosts(siteDirectory string, posts *Posts, tmplt *template.Template) (err error) {
 	for _, post := range *posts {
 		err = MakePost(siteDirectory, &post, posts, tmplt)
 		if err != nil {
@@ -26,7 +26,7 @@ func MakePosts(siteDirectory string, posts *[]Post, tmplt *template.Template) (e
 	return
 }
 
-func MakePost(siteDirectory string, post *Post, posts *[]Post, tmplt *template.Template) error {
+func MakePost(siteDirectory string, post *Post, posts *Posts, tmplt *template.Template) error {
 	if !post.Published {
 		return nil
 	}
@@ -50,7 +50,7 @@ func MakePost(siteDirectory string, post *Post, posts *[]Post, tmplt *template.T
 	return err
 }
 
-func MakeHomepage(siteDirectory string, posts *[]Post, t *template.Template) error {
+func MakeHomepage(siteDirectory string, posts *Posts, t *template.Template) error {
 	os.MkdirAll(siteDirectory, os.FileMode(0777))
 
 	f, err := os.Create(siteDirectory + "/index.html")

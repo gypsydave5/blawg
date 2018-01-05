@@ -133,7 +133,9 @@ func GetTemplates(templateDirectory string) (*template.Template, error) {
 	return template.ParseGlob(templateDirectory + "/**")
 }
 
-func GetPosts(postDir string) (posts []Post, err error) {
+func GetPosts(postDir string) (*Posts, error) {
+	var err error
+	var posts []Post
 	err = filepath.Walk(postDir, func(path string, fileInfo os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -163,5 +165,6 @@ func GetPosts(postDir string) (posts []Post, err error) {
 		return nil
 	})
 
-	return posts, err
+	var p Posts = posts
+	return &p, err
 }

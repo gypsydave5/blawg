@@ -18,7 +18,7 @@ func TestTemplate(t *testing.T) {
 
 	mainPost := testPost("Main Post Here", "<p>main post body</p>", 1984, 6, 6)
 
-	posts := []Post{
+	posts := Posts{
 		testPost("First Post", "First Post Body", 1979, 12, 5),
 		testPost("Second Post", "Second Post Body", 1989, 12, 5),
 		mainPost,
@@ -42,7 +42,7 @@ func TestMakePosts(t *testing.T) {
 	assert := NewAssertions(t)
 	postOne := testPost("Abba", "First Post Body", 1979, 12, 5)
 	postTwo := testPost("Second Post", "Second Post Body", 1989, 12, 5)
-	posts := []Post{
+	posts := Posts{
 		postOne,
 		postTwo,
 	}

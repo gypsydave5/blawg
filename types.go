@@ -22,8 +22,20 @@ func (ps Posts) Swap(i, j int) {
 	ps[i], ps[j] = ps[j], ps[i]
 }
 
-func SortPostsByDate(p *[]Post) {
-	sort.Sort(Posts(*p))
+func (ps Posts) Reverse() {
+	sort.Reverse(ps)
+}
+
+func (ps Posts) Take(n int) Posts {
+	return ps[:n]
+}
+
+func (ps Posts) Drop(n int) Posts {
+	return ps[n:]
+}
+
+func SortPostsByDate(p *Posts) {
+	sort.Sort(p)
 }
 
 type Post struct {
@@ -60,7 +72,7 @@ type Metadata struct {
 
 type Page struct {
 	Post     *Post
-	PostList *[]Post
+	PostList *Posts
 }
 
 func lowerKebabCase(s string) string {

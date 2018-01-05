@@ -15,19 +15,19 @@ func MakeBlog(postDirectory, templateDirectory, extrasDirectory, siteDirectory s
 		return err
 	}
 
-	SortPostsByDate(&posts)
+	SortPostsByDate(posts)
 
 	t, err := GetTemplates(templateDirectory)
 	if err != nil {
 		return err
 	}
 
-	err = MakePosts(siteDirectory, &posts, t)
+	err = MakePosts(siteDirectory, posts, t)
 	if err != nil {
 		return err
 	}
 
-	err = MakeHomepage(siteDirectory, &posts, t)
+	err = MakeHomepage(siteDirectory, posts, t)
 	if err != nil {
 		return err
 	}
