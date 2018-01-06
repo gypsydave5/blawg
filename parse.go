@@ -154,7 +154,7 @@ func GetPosts(postDir string) (*Posts, error) {
 
 		post, err := Parse(file)
 		if err != nil {
-			return errors.New(fmt.Sprintf("error parsing post %s : \n\t%s", fileInfo.Name(), err))
+			return fmt.Errorf("error parsing post %s : \n\t%s", fileInfo.Name(), err)
 		}
 
 		if !post.Published {

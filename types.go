@@ -22,8 +22,11 @@ func (ps Posts) Swap(i, j int) {
 	ps[i], ps[j] = ps[j], ps[i]
 }
 
-func (ps Posts) Reverse() {
-	sort.Reverse(ps)
+func (ps Posts) Reverse() Posts {
+	reversedList := make(Posts, len(ps))
+	copy(reversedList, ps)
+	sort.Sort(sort.Reverse(reversedList))
+	return reversedList
 }
 
 func (ps Posts) Take(n int) Posts {
@@ -34,8 +37,8 @@ func (ps Posts) Drop(n int) Posts {
 	return ps[n:]
 }
 
-func SortPostsByDate(p *Posts) {
-	sort.Sort(p)
+func SortPostsByDate(ps *Posts) {
+	sort.Sort(ps)
 }
 
 type Post struct {
