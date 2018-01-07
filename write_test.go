@@ -47,10 +47,10 @@ func TestMakePosts(t *testing.T) {
 		postTwo,
 	}
 
-	mainTemplate, err := template.New("main").Parse(`<p>{{.Post.Title}}</p>"`)
+	postTemplate, err := template.New("post").Parse(`<p>{{.Post.Title}}</p>"`)
 	assert.NotError(err)
 
-	MakePosts(testSiteDirectory, &posts, mainTemplate)
+	MakePosts(testSiteDirectory, &posts, postTemplate)
 
 	for _, post := range posts {
 		expectedFile := testSiteDirectory + "/posts/" + post.Path() + "index.html"
@@ -61,6 +61,25 @@ func TestMakePosts(t *testing.T) {
 	}
 
 	tearDownTestSite(t)
+}
+
+func TestPostsIndex(t *testing.T) {
+	assert := NewAssertions(t)
+	postOne := testPost("Abba", "First Post Body", 1979, 12, 5)
+	postTwo := testPost("Second Post", "Second Post Body", 1989, 12, 5)
+	posts := Posts{
+		postOne,
+		postTwo,
+	}
+
+	indexTemplate, err := template.New("index").Parse(`<p>{{.Posts}}</p>"`)
+	assert.NotError(err)
+
+  MakePostIndex(testSiteDirectory, &posts, indexTemplate)
+}
+
+func MakePostIndex(s string, posts *Posts, i *template.Template) {
+
 }
 
 func TestBuildPostPath(t *testing.T) {
@@ -150,6 +169,6 @@ func testPost(title, body string, year, month, day int) Post {
 }
 
 func stubTemplate() (mainTemplate *template.Template) {
-	mainTemplate, _ = template.New("main").Parse("")
+	mainTemplate, _ = template.New("post").Parse("")
 	return
 }

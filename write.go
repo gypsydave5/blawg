@@ -12,7 +12,7 @@ func WritePost(w io.Writer, post *Post, posts *Posts, template *template.Templat
 		Post:     post,
 		PostList: posts,
 	}
-	err := template.ExecuteTemplate(w, "main", &page)
+	err := template.ExecuteTemplate(w, "post", &page)
 	return err
 }
 
@@ -67,7 +67,7 @@ func MakeHomepage(siteDirectory string, posts *Posts, t *template.Template) erro
 		posts,
 	}
 
-	err = t.ExecuteTemplate(f, "main", page)
+	err = t.ExecuteTemplate(f, "post", page)
 
 	return err
 }
