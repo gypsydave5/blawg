@@ -72,14 +72,15 @@ func TestPostsIndex(t *testing.T) {
 		postTwo,
 	}
 
-	indexTemplate, err := template.New("index").Parse(`<p>{{.Posts}}</p>"`)
+	indexTemplate, err := template.New("index").Parse(`<p>{{range .}}{{.Title}}{{end}}</p>"`)
+
 	assert.NotError(err)
+	err = MakePostIndex(testSiteDirectory, &posts, indexTemplate)
+	if err != nil {
+		t.Errorf("unexpected error %s", err)
+	}
 
-  MakePostIndex(testSiteDirectory, &posts, indexTemplate)
-}
-
-func MakePostIndex(s string, posts *Posts, i *template.Template) {
-
+	assert.FileExists(testSiteDirectory + "/posts/index.html")
 }
 
 func TestBuildPostPath(t *testing.T) {
