@@ -14,7 +14,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&siteDirectory,"site", "site", "directory to write the website to")
+	flag.StringVar(&siteDirectory, "site", "site", "directory to write the website to")
 	flag.StringVar(&templatesDirectory, "templates", "templates", "directory containing the templates")
 	flag.StringVar(&postsDirectory, "posts", "posts", "directory containing the blog posts")
 	flag.StringVar(&extrasDirectory, "extras", "extras", "directory containing the templates")
@@ -22,7 +22,7 @@ func init() {
 
 func main() {
 	flag.Parse()
-	err := blawg.MakeBlog(postsDirectory, templatesDirectory, extrasDirectory, siteDirectory)
+	err := blawg.MakeBlawg(postsDirectory, templatesDirectory, extrasDirectory, siteDirectory)
 	if err != nil {
 		log.Fatalf("%s", err)
 	}
