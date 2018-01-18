@@ -73,6 +73,10 @@ func MakeHomepage(siteDirectory string, posts *Posts, t *template.Template) erro
 }
 
 func MakePostIndex(siteDirectory string, posts *Posts, t *template.Template) error {
+	if t.Lookup("index") == nil {
+		return nil
+	}
+
 	os.MkdirAll(siteDirectory+"/posts", os.FileMode(0777))
 
 	f, err := os.Create(siteDirectory + "/posts/index.html")

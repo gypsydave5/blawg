@@ -17,15 +17,15 @@ import (
 	"path/filepath"
 )
 
-const DateFormat = "2006-01-02 15:04:05"
+const dateFormat = "2006-01-02 15:04:05"
 
 var markdownExtensions = blackfriday.WithExtensions(
 	blackfriday.Footnotes | blackfriday.CommonExtensions,
 )
 
-func Parse(rawPage io.Reader) (*Post, error) {
+func parse(rawPost io.Reader) (*Post, error) {
 	post := new(Post)
-	rawMeta, body, err := split(rawPage)
+	rawMeta, body, err := split(rawPost)
 
 	if err != nil {
 		return post, err
@@ -118,7 +118,7 @@ func addMeta(rawMeta []byte, post *Post) (err error) {
 		return err
 	}
 
-	date, err := time.Parse(DateFormat, meta.Date)
+	date, err := time.Parse(dateFormat, meta.Date)
 	if err != nil {
 		return err
 	}
@@ -129,10 +129,13 @@ func addMeta(rawMeta []byte, post *Post) (err error) {
 	return
 }
 
+// GetTemplates reads in all of the templates in the templates directory
 func GetTemplates(templateDirectory string) (*template.Template, error) {
 	return template.ParseGlob(templateDirectory + "/**")
 }
 
+// GetPosts reads in all of the posts files in the posts directory and parses
+// them into posts.
 func GetPosts(postDir string) (*Posts, error) {
 	var err error
 	var posts []Post
@@ -152,7 +155,7 @@ func GetPosts(postDir string) (*Posts, error) {
 
 		defer file.Close()
 
-		post, err := Parse(file)
+		post, err := parse(file)
 		if err != nil {
 			return fmt.Errorf("error parsing post %s : \n\t%s", fileInfo.Name(), err)
 		}

@@ -39,7 +39,7 @@ This is the body of the post
 `
 
 func TestSplitNoMeta(t *testing.T) {
-	_, err := Parse(strings.NewReader(`no meta block here!`))
+	_, err := parse(strings.NewReader(`no meta block here!`))
 
 	if err.Error() != "no metadata block" {
 		t.Error("did not get the expected error: ", err)
@@ -51,7 +51,7 @@ func TestParseNoBody(t *testing.T) {
 no body here
 or here`
 
-	_, err := Parse(strings.NewReader(noBody))
+	_, err := parse(strings.NewReader(noBody))
 
 	if err.Error() != "no end to the metadata block" {
 		t.Error("did not get the expected error", err.Error())
@@ -60,12 +60,12 @@ or here`
 
 func TestParse(t *testing.T) {
 	assert := NewAssertions(t)
-	post, err := Parse(strings.NewReader(rawPost))
+	post, err := parse(strings.NewReader(rawPost))
 	assert.NotError(err)
 	assert.StringsEqual(post.Layout, "post")
 	assert.StringsEqual(string(post.Title), "example post")
 
-	expectedDate, err := time.Parse(DateFormat, "2016-10-15 23:24:01")
+	expectedDate, err := time.Parse(dateFormat, "2016-10-15 23:24:01")
 
 	if post.Date != expectedDate {
 		t.Error("Did not get the expected date", post.Date)
@@ -92,7 +92,7 @@ title: %s
 date: 2016-10-15 23:24:01
 ---`, titleWithHTML)
 
-	post, err := Parse(strings.NewReader(rawPost))
+	post, err := parse(strings.NewReader(rawPost))
 	assert.NotError(err)
 	if post.Title != template.HTML("the <em>title</em><h1>is BIG</h1>") {
 		t.Errorf("did not get the expected title HTML, %s", post.Title)
@@ -103,6 +103,6 @@ date: 2016-10-15 23:24:01
 
 func TestMetadataParseError(t *testing.T) {
 	assert := NewAssertions(t)
-	_, err := Parse(strings.NewReader(badMetadata))
+	_, err := parse(strings.NewReader(badMetadata))
 	assert.ErrorMessage(err, `parsing time "2016-10-15T23:24:01" as "2006-01-02 15:04:05": cannot parse "T23:24:01" as " "`)
 }

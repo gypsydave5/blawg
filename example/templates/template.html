@@ -28,3 +28,33 @@
 <time datetime="{{.Date.Format "2006-01-02T15:04"}}" >{{.Date.Format "Jan 02, 2006"}}</time>
 <section>{{.Body}}</section>
 {{end}}
+
+{{define "head"}}
+  <head>
+    <link rel="stylesheet" href="/public/css/style.css">
+    <script type="text/x-mathjax-config;executed=true">
+      MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      displayAlign: "left",
+      displayIndent: "2em"
+    });
+    </script>
+  </head>
+{{end}}
+
+{{define "index"}}
+<!DOCTYPE html>
+<html>
+  {{template "head"}}
+  <body>
+    <header>
+      <h1>gypsydave5</h1>
+      <p>The blog of David Wickes, software developer</p>
+    </header>
+    <main>
+    {{template "postlist" .}}
+    </main>
+  </body>
+</html>
+{{end}}
+
