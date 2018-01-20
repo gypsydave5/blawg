@@ -25,7 +25,7 @@ func TestTemplate(t *testing.T) {
 	}
 
 	var b bytes.Buffer
-	err := WritePost(&b, &mainPost, &posts, mainTemplate)
+	err := writePost(&b, &mainPost, &posts, mainTemplate)
 	if err != nil {
 		t.Error("unexpected error")
 	}
@@ -50,13 +50,14 @@ func TestMakePosts(t *testing.T) {
 	postTemplate, err := template.New("post").Parse(`<p>{{.Post.Title}}</p>"`)
 	assert.NotError(err)
 
-	MakePosts(testSiteDirectory, &posts, postTemplate)
+	makePosts(testSiteDirectory, &posts, postTemplate)
 
 	for _, post := range posts {
 		expectedFile := testSiteDirectory + "/posts/" + post.Path() + "index.html"
-		assert.FileExists(expectedFile)
+		if fileDoesNotExist(expectedFile) {
+			t.Error("expected index.html to exist")
+		}
 		contents, _ := ioutil.ReadFile(expectedFile)
-
 		assert.StringContains(string(contents), string(post.Title))
 	}
 
@@ -75,12 +76,14 @@ func TestPostsIndex(t *testing.T) {
 	indexTemplate, err := template.New("index").Parse(`<p>{{range .}}{{.Title}}{{end}}</p>"`)
 
 	assert.NotError(err)
-	err = MakePostIndex(testSiteDirectory, &posts, indexTemplate)
+	err = makePostIndex(testSiteDirectory, &posts, indexTemplate)
 	if err != nil {
 		t.Errorf("unexpected error %s", err)
 	}
 
-	assert.FileExists(testSiteDirectory + "/posts/index.html")
+	if fileDoesNotExist(testSiteDirectory + "/posts/index.html") {
+		t.Error("expected index.html to exist")
+	}
 }
 
 func TestBuildPostPath(t *testing.T) {
@@ -112,11 +115,13 @@ func TestSavePost(t *testing.T) {
 	err := os.MkdirAll(testSiteDirectory, os.FileMode(0777))
 	assert.NotError(err)
 
-	err = MakePost(testSiteDirectory, &post, nil, stubTemplate())
+	err = makePost(testSiteDirectory, &post, nil, stubTemplate())
 	assert.NotError(err)
 
 	expectedFile := testSiteDirectory + "/posts/" + post.Path() + "index.html"
-	assert.FileExists(expectedFile)
+	if fileDoesNotExist(expectedFile) {
+		t.Errorf("expected %s to exist", expectedFile)
+	}
 
 	tearDownTestSite(t)
 }
@@ -129,11 +134,13 @@ func TestNotSavingUnpublishedPost(t *testing.T) {
 	err := os.MkdirAll(testSiteDirectory, os.FileMode(0777))
 	assert.NotError(err)
 
-	err = MakePost(testSiteDirectory, &post, nil, stubTemplate())
+	err = makePost(testSiteDirectory, &post, nil, stubTemplate())
 	assert.NotError(err)
 
 	unexpectedFile := testSiteDirectory + "/posts/" + post.Path() + "index.html"
-	assert.FileDoesNotExist(unexpectedFile)
+	if fileExists(unexpectedFile) {
+		t.Errorf("expected %s not to exist", unexpectedFile)
+	}
 
 	tearDownTestSite(t)
 }

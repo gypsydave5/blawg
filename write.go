@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func WritePost(w io.Writer, post *Post, posts *Posts, template *template.Template) error {
+func writePost(w io.Writer, post *Post, posts *Posts, template *template.Template) error {
 	page := Page{
 		Post:     post,
 		PostList: posts,
@@ -16,9 +16,22 @@ func WritePost(w io.Writer, post *Post, posts *Posts, template *template.Templat
 	return err
 }
 
-func MakePosts(siteDirectory string, posts *Posts, tmplt *template.Template) (err error) {
+func makeAboutPage(siteDirectory string, t *template.Template) error {
+	os.MkdirAll(siteDirectory, os.FileMode(0777))
+	f, err := os.Create(siteDirectory + "/about.html")
+	defer f.Close()
+
+	if err != nil {
+		return err
+	}
+
+	t.Execute(f, nil)
+	return nil
+}
+
+func makePosts(siteDirectory string, posts *Posts, tmplt *template.Template) (err error) {
 	for _, post := range *posts {
-		err = MakePost(siteDirectory, &post, posts, tmplt)
+		err = makePost(siteDirectory, &post, posts, tmplt)
 		if err != nil {
 			return
 		}
@@ -26,7 +39,7 @@ func MakePosts(siteDirectory string, posts *Posts, tmplt *template.Template) (er
 	return
 }
 
-func MakePost(siteDirectory string, post *Post, posts *Posts, tmplt *template.Template) error {
+func makePost(siteDirectory string, post *Post, posts *Posts, tmplt *template.Template) error {
 	if !post.Published {
 		return nil
 	}
@@ -41,7 +54,7 @@ func MakePost(siteDirectory string, post *Post, posts *Posts, tmplt *template.Te
 		return err
 	}
 
-	err = WritePost(file, post, posts, tmplt)
+	err = writePost(file, post, posts, tmplt)
 
 	if err != nil {
 		return err
@@ -50,7 +63,7 @@ func MakePost(siteDirectory string, post *Post, posts *Posts, tmplt *template.Te
 	return err
 }
 
-func MakeHomepage(siteDirectory string, posts *Posts, t *template.Template) error {
+func makeHomepage(siteDirectory string, posts *Posts, t *template.Template) error {
 	os.MkdirAll(siteDirectory, os.FileMode(0777))
 
 	f, err := os.Create(siteDirectory + "/index.html")
@@ -72,7 +85,7 @@ func MakeHomepage(siteDirectory string, posts *Posts, t *template.Template) erro
 	return err
 }
 
-func MakePostIndex(siteDirectory string, posts *Posts, t *template.Template) error {
+func makePostIndex(siteDirectory string, posts *Posts, t *template.Template) error {
 	if t.Lookup("index") == nil {
 		return nil
 	}

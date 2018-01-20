@@ -16,27 +16,33 @@ func TestMakeBlog(t *testing.T) {
 	err := MakeBlawg(testPostDirectory, testTemplateDirectory, testExtrasDirectory, testSiteDirectory)
 
 	assert.NotError(err)
-	assert.DirectoryExists(testSiteDirectory)
-	assert.DirectoryExists(testSiteDirectory + "/posts")
-	assert.DirectoryExists(testSiteDirectory + "/css")
+	directoryExists(testSiteDirectory)
+	directoryExists(testSiteDirectory + "/posts")
+	directoryExists(testSiteDirectory + "/css")
 
-	assert.FileExists(testSiteDirectory + "/index.html")
-	assert.FileExists(testSiteDirectory + "/public.txt")
-	assert.FileExists(testSiteDirectory + "/css/styles.css")
+	fileExists(testSiteDirectory + "/index.html")
 
-	if assert.FileExists(testSiteDirectory + "/posts/index.html") {
+	if fileDoesNotExist(testSiteDirectory + "/about.html") {
+		t.Errorf("Expected about.html to exist")
+	}
+	if fileDoesNotExist(testSiteDirectory + "/public.txt") {
+		t.Error("Expected public.txt to exist")
+	}
+	if fileDoesNotExist(testSiteDirectory + "/css/styles.css") {
+		t.Error("Expected /css/styles.css to exist")
+	}
+	if fileDoesNotExist(testSiteDirectory + "/posts/index.html") {
 		t.Errorf("expected post index to exist")
 	}
-
-	if assert.FileExists(testSiteDirectory + "/posts/2016/3/28/post-one/index.html") {
+	if fileDoesNotExist(testSiteDirectory + "/posts/2016/3/28/post-one/index.html") {
 		t.Errorf("expected post one to exist")
 	}
-
-	if assert.FileExists(testSiteDirectory + "/posts/2017/10/21/post-two/index.html") {
+	if fileDoesNotExist(testSiteDirectory + "/posts/2017/10/21/post-two/index.html") {
 		t.Errorf("expected post two to exist")
 	}
-
-	assert.FileDoesNotExist(testSiteDirectory + "/posts/1901/1/1/not-to-be-published/index.html")
+	if fileExists(testSiteDirectory + "/posts/1901/1/1/not-to-be-published/index.html") {
+		t.Errorf("expected not-to-be-published not to exist")
+	}
 
 	file, err := ioutil.ReadFile(testSiteDirectory + "/posts/2017/10/21/post-two/index.html")
 	assert.NotError(err)

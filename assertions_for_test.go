@@ -54,19 +54,15 @@ func (a Assertions) ErrorMessage(err error, message string) {
 	}
 }
 
-func (a Assertions) FileExists(pathToFile string) bool {
+func fileExists(pathToFile string) bool {
 	_, err := os.Stat(pathToFile)
-
-	return os.IsNotExist(err)
+	return !os.IsNotExist(err)
 }
 
-func (a Assertions) DirectoryExists(pathToDirectory string) {
-	a.FileExists(pathToDirectory)
+func directoryExists(pathToDirectory string) bool {
+	return fileExists(pathToDirectory)
 }
 
-func (a Assertions) FileDoesNotExist(pathToFile string) {
-	_, err := os.Stat(pathToFile)
-	if err == nil {
-		a.test.Errorf("Expected file '%s' not to exist", pathToFile)
-	}
+func fileDoesNotExist(pathToFile string) bool {
+	return !fileExists(pathToFile)
 }
