@@ -11,22 +11,11 @@ func writePost(w io.Writer, post *Post, posts *Posts, template *template.Templat
 	page := Page{
 		Post:     post,
 		PostList: posts,
+		About:    template.Lookup("about") != nil,
+		Index:    template.Lookup("index") != nil,
 	}
 	err := template.ExecuteTemplate(w, "post", &page)
 	return err
-}
-
-func makeAboutPage(siteDirectory string, t *template.Template) error {
-	os.MkdirAll(siteDirectory, os.FileMode(0777))
-	f, err := os.Create(siteDirectory + "/about.html")
-	defer f.Close()
-
-	if err != nil {
-		return err
-	}
-
-	t.Execute(f, nil)
-	return nil
 }
 
 func makePosts(siteDirectory string, posts *Posts, tmplt *template.Template) (err error) {
@@ -78,6 +67,8 @@ func makeHomepage(siteDirectory string, posts *Posts, t *template.Template) erro
 	page := Page{
 		&recentPost,
 		posts,
+		false,
+		false,
 	}
 
 	err = t.ExecuteTemplate(f, "post", page)
@@ -101,4 +92,21 @@ func makePostIndex(siteDirectory string, posts *Posts, t *template.Template) err
 
 	err = t.ExecuteTemplate(f, "index", posts)
 	return err
+}
+
+func makeAboutPage(siteDirectory string, t *template.Template) error {
+	if t.Lookup("about") == nil {
+		return nil
+	}
+
+	os.MkdirAll(siteDirectory, os.FileMode(0777))
+	f, err := os.Create(siteDirectory + "/about.html")
+	defer f.Close()
+
+	if err != nil {
+		return err
+	}
+
+	t.Execute(f, nil)
+	return nil
 }

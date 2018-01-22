@@ -48,6 +48,7 @@ func SortPostsByDate(ps *Posts) {
 	sort.Sort(ps)
 }
 
+// Post is a representation of a single blog post.
 type Post struct {
 	Body      template.HTML
 	Title     template.HTML
@@ -56,6 +57,7 @@ type Post struct {
 	Metadata
 }
 
+// Path is a unique file path for a blog post.
 func (p *Post) Path() string {
 	postPathTitle := lowerKebabCase(p.TitleText)
 	postPath := fmt.Sprintf(
@@ -68,10 +70,11 @@ func (p *Post) Path() string {
 	return postPath
 }
 
-func (ps *Posts) SortByDate() {
+func (ps *Posts) sortByDate() {
 	sort.Sort(ps)
 }
 
+// Metadata represents the metadata for a blog post
 type Metadata struct {
 	Title      string   `yaml:"title"`
 	Layout     string   `yaml:"layout"`
@@ -80,9 +83,12 @@ type Metadata struct {
 	Published  bool     `yaml:"published"`
 }
 
+// Page represents the page for a blog post
 type Page struct {
 	Post     *Post
 	PostList *Posts
+	About    bool
+	Index    bool
 }
 
 func lowerKebabCase(s string) string {

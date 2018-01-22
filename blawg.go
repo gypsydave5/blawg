@@ -28,19 +28,19 @@ func MakeBlawg(postDirectory, templateDirectory, extrasDirectory, siteDirectory 
 		return err
 	}
 
-	err = makeHomepage(siteDirectory, posts, t)
+	err = makePostIndex(siteDirectory, posts, t)
 	if err != nil {
 		return err
 	}
 
-	err = makePostIndex(siteDirectory, posts, t)
+	err = makeHomepage(siteDirectory, posts, t)
 	if err != nil {
 		return err
 	}
 
 	aboutTemplate := t.Lookup("about")
 	if aboutTemplate == nil {
-		fmt.Println("No 'about' template found... skippinp")
+		fmt.Println("No 'about' template found... skipping")
 	} else {
 		err = makeAboutPage(siteDirectory, t)
 		if err != nil {
