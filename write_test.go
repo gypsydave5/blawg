@@ -26,9 +26,7 @@ func TestTemplate(t *testing.T) {
 
 	var b bytes.Buffer
 	err := writePost(&b, &mainPost, &posts, mainTemplate)
-	if err != nil {
-		t.Error("unexpected error")
-	}
+	assert.NotError(err)
 
 	s := b.String()
 	assert.StringContains(s, "<h1>Main Post Here</h1>")
@@ -54,9 +52,7 @@ func TestMakePosts(t *testing.T) {
 
 	for _, post := range posts {
 		expectedFile := testSiteDirectory + "/posts/" + post.Path() + "index.html"
-		if fileDoesNotExist(expectedFile) {
-			t.Error("expected index.html to exist")
-		}
+		assert.FileExists(expectedFile)
 		contents, _ := ioutil.ReadFile(expectedFile)
 		assert.StringContains(string(contents), string(post.Title))
 	}
@@ -74,16 +70,12 @@ func TestPostsIndex(t *testing.T) {
 	}
 
 	indexTemplate, err := template.New("index").Parse(`<p>{{range .}}{{.Title}}{{end}}</p>"`)
-
 	assert.NotError(err)
-	err = makePostIndex(testSiteDirectory, &posts, indexTemplate)
-	if err != nil {
-		t.Errorf("unexpected error %s", err)
-	}
 
-	if fileDoesNotExist(testSiteDirectory + "/posts/index.html") {
-		t.Error("expected index.html to exist")
-	}
+	err = makePostIndex(testSiteDirectory, &posts, indexTemplate)
+	assert.NotError(err)
+
+	assert.FileExists(testSiteDirectory + "/posts/index.html")
 }
 
 func TestBuildPostPath(t *testing.T) {
@@ -119,9 +111,7 @@ func TestSavePost(t *testing.T) {
 	assert.NotError(err)
 
 	expectedFile := testSiteDirectory + "/posts/" + post.Path() + "index.html"
-	if fileDoesNotExist(expectedFile) {
-		t.Errorf("expected %s to exist", expectedFile)
-	}
+	assert.FileExists(expectedFile)
 
 	tearDownTestSite(t)
 }
@@ -138,9 +128,7 @@ func TestNotSavingUnpublishedPost(t *testing.T) {
 	assert.NotError(err)
 
 	unexpectedFile := testSiteDirectory + "/posts/" + post.Path() + "index.html"
-	if fileExists(unexpectedFile) {
-		t.Errorf("expected %s not to exist", unexpectedFile)
-	}
+	assert.FileDoesntExist(unexpectedFile)
 
 	tearDownTestSite(t)
 }
