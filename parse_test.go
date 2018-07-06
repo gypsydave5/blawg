@@ -19,7 +19,7 @@ categories:
     - category2
 published: true
 ---
-This is the body of the post
+This is the body of the post...
 
 ## A sub header
 `
@@ -77,7 +77,7 @@ func TestParse(t *testing.T) {
 
 	assert.True(post.Published, "expected post to be published")
 
-	var expectedHTML = `<p>This is the body of the post</p>
+	var expectedHTML = `<p>This is the body of the post&hellip;</p>
 
 <h2>A sub header</h2>
 `
