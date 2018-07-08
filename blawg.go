@@ -37,6 +37,11 @@ func MakeBlawg(postDirectory, templateDirectory, extrasDirectory, siteDirectory 
 		return err
 	}
 
+	err = makePages(siteDirectory)
+	if err != nil {
+		return err
+	}
+
 	err = copyExtrasDirectoryContents(extrasDirectory, siteDirectory)
 	return err
 }

@@ -26,6 +26,12 @@ func makePosts(siteDirectory string, posts *Posts, tmplt *template.Template) (er
 	return
 }
 
+func makePages(siteDirectory string) (err error) {
+	path := fmt.Sprintf("%s/pages", siteDirectory)
+	os.MkdirAll(path, os.FileMode(0777))
+	return
+}
+
 func makePost(siteDirectory string, post *Post, posts *Posts, tmplt *template.Template) error {
 	if !post.Published {
 		return nil
