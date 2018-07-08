@@ -9,10 +9,17 @@ var testSiteDirectory = "test-site-directory"
 var testTemplateDirectory = "example/templates"
 var testExtrasDirectory = "example/extras"
 var testPostDirectory = "example/posts"
+var testPagesDirectory = "example/pages"
 
 func TestMakeBlog(t *testing.T) {
 	assert := NewAssertions(t)
-	err := MakeBlawg(testPostDirectory, testTemplateDirectory, testExtrasDirectory, testSiteDirectory)
+	err := MakeBlawg(
+		testPostDirectory,
+		testPagesDirectory,
+		testTemplateDirectory,
+		testExtrasDirectory,
+		testSiteDirectory,
+	)
 
 	assert.NotError(err)
 	assert.DirectoryExists(testSiteDirectory)
@@ -23,6 +30,7 @@ func TestMakeBlog(t *testing.T) {
 
 	assert.FileExists(testSiteDirectory + "/public.txt")
 	assert.FileExists(testSiteDirectory + "/css/styles.css")
+
 	assert.FileExists(testSiteDirectory + "/posts/index.html")
 	assert.FileExists(testSiteDirectory + "/posts/2016/3/28/post-one/index.html")
 	assert.FileExists(testSiteDirectory + "/posts/2017/10/21/post-two/index.html")
@@ -33,6 +41,8 @@ func TestMakeBlog(t *testing.T) {
 
 	post := string(file)
 	assert.StringContainsInOrder(post, "post two", "post one")
+
+	assert.FileExists(testSiteDirectory + "/pages/about/index.html")
 
 	tearDownTestSite(t)
 }

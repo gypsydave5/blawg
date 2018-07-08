@@ -45,6 +45,20 @@ func parse(rawPost io.Reader) (*Post, error) {
 	return post, nil
 }
 
+func parsePage(rawPage io.Reader) (*Page, error) {
+	page := new(Page)
+	_, body, err := split(rawPage)
+
+	if err != nil {
+		return page, err
+	}
+
+	pageHTML := blackfriday.Run(body, markdownExtensions)
+	page.Body = template.HTML(pageHTML)
+
+	return page, nil
+}
+
 func htmlTitle(s string) template.HTML {
 	title := blackfriday.Run([]byte(s), markdownExtensions)
 	titleWithoutPtags := title[3 : len(title)-5]
@@ -170,4 +184,35 @@ func GetPosts(postDir string) (*Posts, error) {
 
 	var p Posts = posts
 	return &p, err
+}
+
+func getPages(pageDir string) (*Pages, error) {
+	var err error
+	var pages Pages
+	err = filepath.Walk(pageDir, func(path string, fileInfo os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if fileInfo.IsDir() {
+			return nil
+		}
+
+		file, err := os.Open(path)
+		if err != nil {
+			return err
+		}
+
+		defer file.Close()
+
+		page, err := parsePage(file)
+		if err != nil {
+			return fmt.Errorf("error parsing page %s : \n\t%s", fileInfo.Name(), err)
+		}
+
+		pages = append(pages, *page)
+		return nil
+	})
+
+	return &pages, err
 }

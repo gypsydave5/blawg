@@ -89,6 +89,11 @@ type PostPage struct {
 	PostList *Posts
 }
 
+type Page struct {
+	Body template.HTML
+}
+type Pages []Page
+
 func lowerKebabCase(s string) string {
 	return toKebabCase(strings.ToLower(s))
 }

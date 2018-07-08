@@ -9,7 +9,7 @@ import (
 
 // MakeBlawg creates a blog in `siteDirectory` out of a directory of posts, using
 // standard go html/templates from a directory.
-func MakeBlawg(postDirectory, templateDirectory, extrasDirectory, siteDirectory string) error {
+func MakeBlawg(postDirectory, pagesDirectory, templateDirectory, extrasDirectory, siteDirectory string) error {
 	posts, err := GetPosts(postDirectory)
 	if err != nil {
 		return err
@@ -37,7 +37,12 @@ func MakeBlawg(postDirectory, templateDirectory, extrasDirectory, siteDirectory 
 		return err
 	}
 
-	err = makePages(siteDirectory)
+	pages, err := getPages(pagesDirectory)
+	if err != nil {
+		return err
+	}
+
+	err = makePages(siteDirectory, pages, t)
 	if err != nil {
 		return err
 	}

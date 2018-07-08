@@ -8,11 +8,16 @@ import (
 )
 
 func writePost(w io.Writer, post *Post, posts *Posts, template *template.Template) error {
-	page := PostPage{
+	postPage := PostPage{
 		Post:     post,
 		PostList: posts,
 	}
-	err := template.ExecuteTemplate(w, "post", &page)
+	err := template.ExecuteTemplate(w, "post", &postPage)
+	return err
+}
+
+func writePage(w io.Writer, page *Page, template *template.Template) error {
+	err := template.ExecuteTemplate(w, "page", &page)
 	return err
 }
 
@@ -26,10 +31,31 @@ func makePosts(siteDirectory string, posts *Posts, tmplt *template.Template) (er
 	return
 }
 
-func makePages(siteDirectory string) (err error) {
+func makePages(siteDirectory string, pages *Pages, tmplt *template.Template) (err error) {
 	path := fmt.Sprintf("%s/pages", siteDirectory)
 	os.MkdirAll(path, os.FileMode(0777))
+
+	for _, page := range *pages {
+		err = makePage(siteDirectory, &page, tmplt)
+		if err != nil {
+			return
+		}
+	}
 	return
+}
+
+func makePage(siteDirectory string, page *Page, tmplt *template.Template) error {
+	path := fmt.Sprintf("%s/pages/about/", siteDirectory)
+	os.MkdirAll(path, os.FileMode(0777))
+	fileName := fmt.Sprintf("%sindex.html", path)
+	fmt.Println(fileName)
+	file, err := os.Create(fileName)
+
+	defer file.Close()
+
+	err = writePage(file, page, tmplt)
+
+	return err
 }
 
 func makePost(siteDirectory string, post *Post, posts *Posts, tmplt *template.Template) error {
