@@ -106,3 +106,23 @@ func TestMetadataParseError(t *testing.T) {
 	_, err := parse(strings.NewReader(badMetadata))
 	assert.ErrorMessage(err, `parsing time "2016-10-15T23:24:01" as "2006-01-02 15:04:05": cannot parse "T23:24:01" as " "`)
 }
+
+func TestParsePage(t *testing.T) {
+	assert := NewAssertions(t)
+	var rawPage = `---
+title: "example page"
+---
+This is the body of the page...
+
+## A sub header`
+
+	page, err := parsePage(strings.NewReader(rawPage))
+	assert.NotError(err)
+	assert.StringsEqual(string(page.Title), "example page")
+
+	var expectedHTML = `<p>This is the body of the page&hellip;</p>
+
+<h2>A sub header</h2>
+`
+	assert.StringsEqual(string(page.Body), expectedHTML)
+}

@@ -47,7 +47,7 @@ func parse(rawPost io.Reader) (*Post, error) {
 
 func parsePage(rawPage io.Reader) (*Page, error) {
 	page := new(Page)
-	_, body, err := split(rawPage)
+	rawMeta, body, err := split(rawPage)
 
 	if err != nil {
 		return page, err
@@ -55,6 +55,11 @@ func parsePage(rawPage io.Reader) (*Page, error) {
 
 	pageHTML := blackfriday.Run(body, markdownExtensions)
 	page.Body = template.HTML(pageHTML)
+	meta, err := parseMeta(rawMeta)
+	if err != nil {
+		return page, err
+	}
+	page.Title = htmlTitle(meta.Title)
 
 	return page, nil
 }
@@ -140,6 +145,12 @@ func addMeta(rawMeta []byte, post *Post) (err error) {
 	post.Date = date
 	post.Metadata = meta
 
+	return
+}
+
+func parseMeta(rawMeta []byte) (m Metadata, err error) {
+	m = Metadata{}
+	err = yaml.Unmarshal(rawMeta, &m)
 	return
 }
 
