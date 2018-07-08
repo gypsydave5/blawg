@@ -110,7 +110,7 @@ func TestMetadataParseError(t *testing.T) {
 func TestParsePage(t *testing.T) {
 	assert := NewAssertions(t)
 	var rawPage = `---
-title: "example page"
+title: "_example page_"
 ---
 This is the body of the page...
 
@@ -118,7 +118,8 @@ This is the body of the page...
 
 	page, err := parsePage(strings.NewReader(rawPage))
 	assert.NotError(err)
-	assert.StringsEqual(string(page.Title), "example page")
+	assert.StringsEqual(string(page.Title), "<em>example page</em>")
+	assert.StringsEqual(string(page.TitleText), "example page")
 
 	var expectedHTML = `<p>This is the body of the page&hellip;</p>
 

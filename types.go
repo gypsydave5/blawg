@@ -90,8 +90,9 @@ type PostPage struct {
 }
 
 type Page struct {
-	Body  template.HTML
-	Title template.HTML
+	Body      template.HTML
+	Title     template.HTML
+	TitleText string
 }
 type Pages []Page
 

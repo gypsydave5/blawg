@@ -60,14 +60,25 @@ func parsePage(rawPage io.Reader) (*Page, error) {
 		return page, err
 	}
 	page.Title = htmlTitle(meta.Title)
+	page.TitleText, err = textFromHTMLTemplate(page.Title)
 
-	return page, nil
+	return page, err
 }
 
 func htmlTitle(s string) template.HTML {
 	title := blackfriday.Run([]byte(s), markdownExtensions)
 	titleWithoutPtags := title[3 : len(title)-5]
 	return template.HTML(titleWithoutPtags)
+}
+
+func textFromHTMLTemplate(t template.HTML) (text string, err error) {
+	node, err := html.Parse(strings.NewReader(string(t)))
+	if err != nil {
+		return
+	}
+
+	text = nodeTextContent(node)
+	return
 }
 
 func textTitle(p *Post) (string, error) {
