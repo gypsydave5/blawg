@@ -20,7 +20,6 @@ func TestMakeBlog(t *testing.T) {
 	assert.DirectoryExists(testSiteDirectory + "/css")
 	assert.FileExists(testSiteDirectory + "/index.html")
 
-	assert.FileExists(testSiteDirectory + "/about.html")
 	assert.FileExists(testSiteDirectory + "/public.txt")
 	assert.FileExists(testSiteDirectory + "/css/styles.css")
 	assert.FileExists(testSiteDirectory + "/posts/index.html")

@@ -83,12 +83,10 @@ type Metadata struct {
 	Published  bool     `yaml:"published"`
 }
 
-// Page represents the page for a blog post
-type Page struct {
+// PostPage represents the page for a blog post
+type PostPage struct {
 	Post     *Post
 	PostList *Posts
-	About    bool
-	Index    bool
 }
 
 func lowerKebabCase(s string) string {

@@ -1,7 +1,6 @@
 package blawg
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -36,16 +35,6 @@ func MakeBlawg(postDirectory, templateDirectory, extrasDirectory, siteDirectory 
 	err = makeHomepage(siteDirectory, posts, t)
 	if err != nil {
 		return err
-	}
-
-	aboutTemplate := t.Lookup("about")
-	if aboutTemplate == nil {
-		fmt.Println("No 'about' template found... skipping")
-	} else {
-		err = makeAboutPage(siteDirectory, t)
-		if err != nil {
-			return err
-		}
 	}
 
 	err = copyExtrasDirectoryContents(extrasDirectory, siteDirectory)
