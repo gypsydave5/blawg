@@ -45,7 +45,7 @@ func makePages(siteDirectory string, pages *Pages, tmplt *template.Template) (er
 }
 
 func makePage(siteDirectory string, page *Page, tmplt *template.Template) error {
-	path := fmt.Sprintf("%s/pages/about/", siteDirectory)
+	path := fmt.Sprintf("%s/pages/%s/", siteDirectory, page.Path())
 	os.MkdirAll(path, os.FileMode(0777))
 	fileName := fmt.Sprintf("%sindex.html", path)
 	fmt.Println(fileName)

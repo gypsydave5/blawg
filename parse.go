@@ -45,24 +45,24 @@ func parse(rawPost io.Reader) (*Post, error) {
 	return post, nil
 }
 
-func parsePage(rawPage io.Reader) (*Page, error) {
-	page := new(Page)
+func parsePage(rawPage io.Reader) (page *Page, err error) {
+	page = new(Page)
 	rawMeta, body, err := split(rawPage)
-
 	if err != nil {
-		return page, err
+		return
 	}
 
 	pageHTML := blackfriday.Run(body, markdownExtensions)
 	page.Body = template.HTML(pageHTML)
 	meta, err := parseMeta(rawMeta)
 	if err != nil {
-		return page, err
+		return
 	}
+
 	page.Title = htmlTitle(meta.Title)
 	page.TitleText, err = textFromHTMLTemplate(page.Title)
 
-	return page, err
+	return
 }
 
 func htmlTitle(s string) template.HTML {

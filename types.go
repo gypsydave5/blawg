@@ -94,6 +94,11 @@ type Page struct {
 	Title     template.HTML
 	TitleText string
 }
+
+func (p *Page) Path() string {
+	return lowerKebabCase(p.TitleText)
+}
+
 type Pages []Page
 
 func lowerKebabCase(s string) string {
