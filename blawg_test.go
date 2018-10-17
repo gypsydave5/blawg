@@ -27,6 +27,9 @@ func TestMakeBlog(t *testing.T) {
 	assert.DirectoryExists(testSiteDirectory + "/css")
 	assert.DirectoryExists(testSiteDirectory + "/pages")
 	assert.FileExists(testSiteDirectory + "/index.html")
+	file, err := ioutil.ReadFile(testSiteDirectory + "/index.html")
+	post := string(file)
+	assert.StringContains(post, "<h1>post two</h1>")
 
 	assert.FileExists(testSiteDirectory + "/public.txt")
 	assert.FileExists(testSiteDirectory + "/css/styles.css")
@@ -36,13 +39,13 @@ func TestMakeBlog(t *testing.T) {
 	assert.FileExists(testSiteDirectory + "/posts/2017/10/21/post-two/index.html")
 	assert.FileDoesntExist(testSiteDirectory + "/posts/1901/1/1/not-to-be-published/index.html")
 
-	file, err := ioutil.ReadFile(testSiteDirectory + "/posts/2017/10/21/post-two/index.html")
+	file, err = ioutil.ReadFile(testSiteDirectory + "/posts/2017/10/21/post-two/index.html")
 	assert.NotError(err)
 
-	post := string(file)
+	post = string(file)
 	assert.StringContainsInOrder(post, "post two", "post one")
 
 	assert.FileExists(testSiteDirectory + "/pages/about/index.html")
 
-	tearDownTestSite(t)
+	// tearDownTestSite(t)
 }
