@@ -91,7 +91,7 @@ func TestBuildPostPathEscape(t *testing.T) {
 	assert := NewAssertions(t)
 	post := testPost("100% Escape?", "", 1989, 1, 1)
 
-	expectedPath := "1989/1/1/100%25-escape%3F/"
+	expectedPath := "1989/1/1/100-escape/"
 	calculatedPath := post.Path()
 	assert.StringsEqual(calculatedPath, expectedPath)
 }

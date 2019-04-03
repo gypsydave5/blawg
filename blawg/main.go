@@ -2,8 +2,10 @@ package main
 
 import (
 	"flag"
-	"github.com/gypsydave5/blawg"
+	"fmt"
 	"log"
+
+	"github.com/gypsydave5/blawg"
 )
 
 var (

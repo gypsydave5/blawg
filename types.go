@@ -3,10 +3,10 @@ package blawg
 import (
 	"fmt"
 	"html/template"
-	"net/url"
 	"sort"
 	"strings"
 	"time"
+	"unicode"
 )
 
 // Posts represents a slice of []Post. It is used for default sorting by date
@@ -60,7 +60,7 @@ type Post struct {
 
 // Path is a unique file path for a blog post.
 func (p *Post) Path() string {
-	postPathTitle := url.PathEscape(lowerKebabCase(p.TitleText))
+	postPathTitle := urlSafeFileName(p.TitleText)
 	postPath := fmt.Sprintf(
 		"%d/%d/%d/%s/",
 		p.Date.Year(),
@@ -97,15 +97,27 @@ type Page struct {
 }
 
 func (p *Page) Path() string {
-	return lowerKebabCase(p.TitleText)
+	return urlSafeFileName(p.TitleText)
 }
 
 type Pages []Page
 
-func lowerKebabCase(s string) string {
-	return toKebabCase(strings.ToLower(s))
-}
+func urlSafeFileName(s string) string {
+	removeUnsafeRunes := func(r rune) rune {
+		switch {
+		case r >= '0' && r <= '9':
+			return r
+		case r >= 'a' && r <= 'z':
+			return r
+		case r >= 'A' && r <= 'Z':
+			return unicode.ToLower(r)
+		case r == ' ':
+			return '-'
+		case strings.ContainsRune(".~_-", r):
+			return r
+		}
+		return rune(-1)
+	}
 
-func toKebabCase(s string) string {
-	return strings.Replace(s, " ", "-", -1)
+	return strings.Map(removeUnsafeRunes, s)
 }

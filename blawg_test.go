@@ -37,7 +37,7 @@ func TestMakeBlog(t *testing.T) {
 	assert.FileExists(testSiteDirectory + "/posts/index.html")
 	assert.FileExists(testSiteDirectory + "/posts/2016/3/28/post-one/index.html")
 	assert.FileExists(testSiteDirectory + "/posts/2017/10/21/post-two/index.html")
-	assert.FileExists(testSiteDirectory + "/posts/1989/1/1/100%25-escape%3F/index.html")
+	assert.FileExists(testSiteDirectory + "/posts/1989/1/1/100--escape/index.html")
 	assert.FileDoesntExist(testSiteDirectory + "/posts/1901/1/1/not-to-be-published/index.html")
 
 	file, err = ioutil.ReadFile(testSiteDirectory + "/posts/2017/10/21/post-two/index.html")
