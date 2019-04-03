@@ -3,6 +3,7 @@ package blawg
 import (
 	"fmt"
 	"html/template"
+	"net/url"
 	"sort"
 	"strings"
 	"time"
@@ -59,7 +60,7 @@ type Post struct {
 
 // Path is a unique file path for a blog post.
 func (p *Post) Path() string {
-	postPathTitle := lowerKebabCase(p.TitleText)
+	postPathTitle := url.PathEscape(lowerKebabCase(p.TitleText))
 	postPath := fmt.Sprintf(
 		"%d/%d/%d/%s/",
 		p.Date.Year(),

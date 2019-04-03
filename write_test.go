@@ -87,6 +87,15 @@ func TestBuildPostPath(t *testing.T) {
 	assert.StringsEqual(calculatedPath, expectedPath)
 }
 
+func TestBuildPostPathEscape(t *testing.T) {
+	assert := NewAssertions(t)
+	post := testPost("100% Escape?", "", 1989, 1, 1)
+
+	expectedPath := "1989/1/1/100%25-escape%3F/"
+	calculatedPath := post.Path()
+	assert.StringsEqual(calculatedPath, expectedPath)
+}
+
 func TestMultiplePostPaths(t *testing.T) {
 	assert := NewAssertions(t)
 	posts := []Post{testPostOne, testPostTwo}
