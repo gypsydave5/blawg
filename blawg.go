@@ -47,6 +47,11 @@ func MakeBlawg(postDirectory, pagesDirectory, templateDirectory, extrasDirectory
 		return err
 	}
 
+	err = makeRSSFeed(siteDirectory)
+	if err != nil {
+		return err
+	}
+
 	err = copyExtrasDirectoryContents(extrasDirectory, siteDirectory)
 	return err
 }

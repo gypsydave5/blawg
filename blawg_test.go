@@ -26,6 +26,9 @@ func TestMakeBlog(t *testing.T) {
 	assert.DirectoryExists(testSiteDirectory + "/posts")
 	assert.DirectoryExists(testSiteDirectory + "/css")
 	assert.DirectoryExists(testSiteDirectory + "/pages")
+	assert.DirectoryExists(testSiteDirectory + "/feeds")
+	assert.FileExists(testSiteDirectory + "/feeds/feed.rss")
+
 	assert.FileExists(testSiteDirectory + "/index.html")
 	file, err := ioutil.ReadFile(testSiteDirectory + "/index.html")
 	post := string(file)

@@ -31,17 +31,20 @@ func makePosts(siteDirectory string, posts *Posts, tmplt *template.Template) (er
 	return
 }
 
-func makePages(siteDirectory string, pages *Pages, tmplt *template.Template) (err error) {
+func makePages(siteDirectory string, pages *Pages, tmplt *template.Template) error {
 	path := fmt.Sprintf("%s/pages", siteDirectory)
-	os.MkdirAll(path, os.FileMode(0777))
+	err := os.MkdirAll(path, os.FileMode(0777))
+	if err != nil {
+		return err
+	}
 
 	for _, page := range *pages {
 		err = makePage(siteDirectory, &page, tmplt)
 		if err != nil {
-			return
+			return err
 		}
 	}
-	return
+	return err
 }
 
 func makePage(siteDirectory string, page *Page, tmplt *template.Template) error {
