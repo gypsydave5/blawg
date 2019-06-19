@@ -18,6 +18,7 @@ categories:
     - category1
     - category2
 published: true
+description: a description of a post
 ---
 This is the body of the post...
 
@@ -82,6 +83,8 @@ func TestParse(t *testing.T) {
 <h2>A sub header</h2>
 `
 	assert.StringsEqual(string(post.Body), expectedHTML)
+
+	assert.StringsEqual(post.Description, "a description of a post")
 }
 
 func TestTitleTextParse(t *testing.T) {

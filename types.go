@@ -77,11 +77,12 @@ func (ps *Posts) sortByDate() {
 
 // Metadata represents the metadata for a blog post
 type Metadata struct {
-	Title      string   `yaml:"title"`
-	Layout     string   `yaml:"layout"`
-	Date       string   `yaml:"date"`
-	Categories []string `yaml:"categories"`
-	Published  bool     `yaml:"published"`
+	Title       string   `yaml:"title"`
+	Layout      string   `yaml:"layout"`
+	Date        string   `yaml:"date"`
+	Categories  []string `yaml:"categories"`
+	Published   bool     `yaml:"published"`
+	Description string   `yaml:"description"`
 }
 
 // PostPage represents the page for a blog post
