@@ -14,7 +14,7 @@ var rawPost = `---
 layout: post
 title: "example post"
 date: 2016-10-15 23:24:01
-categories:
+tags:
     - category1
     - category2
 published: true
@@ -29,7 +29,7 @@ var badMetadata = `---
 layout: post
 title: "example post"
 date: 2016-10-15T23:24:01
-categories:
+tags:
     - category1
     - category2
 published: true

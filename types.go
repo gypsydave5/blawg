@@ -80,7 +80,7 @@ type Metadata struct {
 	Title       string   `yaml:"title"`
 	Layout      string   `yaml:"layout"`
 	Date        string   `yaml:"date"`
-	Categories  []string `yaml:"categories"`
+	Categories  []string `yaml:"tags"`
 	Published   bool     `yaml:"published"`
 	Description string   `yaml:"description"`
 }
