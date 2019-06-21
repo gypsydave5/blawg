@@ -91,29 +91,3 @@ type AtomLink struct {
 	Rel     string   `xml:"rel,attr"`
 	Type    string   `xml:"type,attr"`
 }
-
-// Rss was generated 2019-06-20 21:41:27 by davidwic on MML813.local.
-type Rss struct {
-	XMLName xml.Name `xml:"http://www.w3.org/2005/Atom"`
-	Text    string   `xml:",chardata"`
-	Version string   `xml:"version,attr"`
-	Atom    string   `xml:"xmlnsatom,attr"`
-	Channel struct {
-		Text string `xml:",chardata"`
-		Item struct {
-			Text        string `xml:",chardata"`
-			Title       string `xml:"title"`
-			Description string `xml:"description"`
-			Link        string `xml:"link"`
-			PubDate     string `xml:"pubDate"`
-			Category    string `xml:"category"`
-			Guid        string `xml:"guid"`
-		} `xml:"item"`
-		Link struct {
-			Text string `xml:",chardata"`
-			Href string `xml:"href,attr"`
-			Rel  string `xml:"rel,attr"`
-			Type string `xml:"type,attr"`
-		} `xml:"link"`
-	} `xml:"channel"`
-}

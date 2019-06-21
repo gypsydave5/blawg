@@ -4,15 +4,13 @@ import (
 	"encoding/xml"
 	"strings"
 	"testing"
-	"time"
 )
 
 func TestNewRSS(t *testing.T) {
 	posts := Posts{
 		Post{
-			Date: time.Now(),
+			TitleText: "a bum title",
 			Metadata: Metadata{
-				Title:       "Sample Title",
 				Categories:  []string{"unix", "fun"},
 				Description: "The best post ever",
 			},
@@ -38,6 +36,21 @@ func TestNewRSS(t *testing.T) {
 	t.Run("RSS uses the config title", func(t *testing.T) {
 		if rss.Channel.Title != config.Title {
 			t.Errorf("Expected %+s to be %+s\n", rss.Channel.Description, config.Description)
+		}
+	})
+
+	t.Run("creates the expected item", func(t *testing.T) {
+		want := RSSItem{
+			Category:    strings.Join(posts[0].Metadata.Categories, ","),
+			Description: posts[0].Metadata.Description,
+			Title:       posts[0].TitleText,
+			Link:        "http://test-urlposts/1/1/1/a-bum-title/",
+			Guid:        "http://test-urlposts/1/1/1/a-bum-title/",
+			PubDate:     "Mon, 01 Jan 0001 00:00:00 +0000",
+		}
+		got := rss.Channel.Item[0]
+		if got != want {
+			t.Errorf("wanted\n\t%#v\nbut got\n\t%#v\n", want, got)
 		}
 	})
 
