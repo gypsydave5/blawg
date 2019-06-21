@@ -208,9 +208,9 @@ func GetPosts(postDir string) (*Posts, error) {
 	return &p, err
 }
 
-func getPages(pageDir string) (*Pages, error) {
+func getPages(pageDir string) ([]Page, error) {
 	var err error
-	var pages Pages
+	var pages []Page
 	err = filepath.Walk(pageDir, func(path string, fileInfo os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -236,5 +236,5 @@ func getPages(pageDir string) (*Pages, error) {
 		return nil
 	})
 
-	return &pages, err
+	return pages, err
 }
