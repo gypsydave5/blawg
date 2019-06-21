@@ -1,0 +1,34 @@
+.TH BLAWG 1
+.SH NAME
+blawg \- an opinionated static site generator
+.SH SYNOPSIS
+.B blawg
+.SH DESCRIPTION
+.B blawg
+builds a static site from a series of blog posts saved as
+.I markdown
+files with a
+.I YAML
+frontmatter containing post metadata, much as is used by
+.B pandoc(1)
+separated from the body of the post by three dashes
+.
+.SH EXAMPLES
+Here is an example of a blog file:
+
+.nf
+.RS
+title: Blawg
+date: 1/1/1
+tags:
+  \- unix
+  \- vim
+\-\-\-
+
+# Blawg
+
+Today I started to write my blawg...
+.RE
+.fi
+.SH SEE ALSO
+pandoc(1)
