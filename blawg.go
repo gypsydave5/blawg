@@ -15,6 +15,11 @@ func MakeBlawg(postDirectory, pagesDirectory, templateDirectory, extrasDirectory
 		return err
 	}
 
+	siteMeta := GetSiteMeta()
+	if err != nil {
+		return err
+	}
+
 	SortPostsByDate(posts)
 
 	t, err := GetTemplates(templateDirectory)
@@ -47,7 +52,7 @@ func MakeBlawg(postDirectory, pagesDirectory, templateDirectory, extrasDirectory
 		return err
 	}
 
-	err = makeRSSFeed(siteDirectory)
+	err = makeRSSFeed(siteDirectory, siteMeta, posts)
 	if err != nil {
 		return err
 	}

@@ -65,6 +65,7 @@ func TestParse(t *testing.T) {
 	assert.NotError(err)
 	assert.StringsEqual(post.Layout, "post")
 	assert.StringsEqual(string(post.Title), "example post")
+	assert.StringsEqual(post.Description, "a description of a post")
 
 	expectedDate, err := time.Parse(dateFormat, "2016-10-15 23:24:01")
 
