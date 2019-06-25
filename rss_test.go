@@ -61,7 +61,7 @@ func TestNewRSS(t *testing.T) {
 		sb := strings.Builder{}
 		xml.NewEncoder(&sb).Encode(rss)
 		rssXML := sb.String()
-		want := `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">`
+		want := `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"`
 		if !strings.Contains(rssXML, want) {
 			t.Errorf("Expected %+s to contain %+s\n", rssXML, want)
 		}
@@ -71,7 +71,7 @@ func TestNewRSS(t *testing.T) {
 		sb := strings.Builder{}
 		xml.NewEncoder(&sb).Encode(rss)
 		rssXML := sb.String()
-		want := `<content><![CDATA[<p>hello</p>]]`
+		want := `<content:encoding><![CDATA[<p>hello</p>]]`
 		if !strings.Contains(rssXML, want) {
 			t.Errorf("Expected %+s to contain %+s\n", rssXML, want)
 		}

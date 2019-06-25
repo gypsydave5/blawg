@@ -30,6 +30,7 @@ func newRSS(posts *Posts, config Config) (*RSS, error) {
 	rss.Version = "2.0"
 	rss.XMLName = xml.Name{Local: "rss", Space: "rss"}
 	rss.Atom = "http://www.w3.org/2005/Atom"
+	rss.Content = "http://purl.org/rss/1.0/modules/content/"
 	rss.Channel.AtomLink.Href = config.URL + "feeds/feed.rss"
 	rss.Channel.AtomLink.Rel = "self"
 	rss.Channel.AtomLink.XMLName = xml.Name{Local: "link", Space: "atom"}
@@ -64,6 +65,7 @@ type RSS struct {
 	XMLName xml.Name `xml:"rss"`
 	Version string   `xml:"version,attr"`
 	Atom    string   `xml:"xmlns:atom,attr"`
+	Content string   `xml:"xmlns:content,attr"`
 	Channel struct {
 		Text          string    `xml:",chardata"`
 		Title         string    `xml:"title"`
@@ -84,11 +86,11 @@ type RSSItem struct {
 	PubDate     string  `xml:"pubDate"`
 	Category    string  `xml:"category"`
 	Guid        string  `xml:"guid"`
-	Content     Content `xml:"content"`
+	Content     Content `xml:"content:encoding"`
 }
 
 type Content struct {
-	XMLName xml.Name `xml:"content"`
+	XMLName xml.Name `xml:"content:encoding"`
 	Text    string   `xml:",cdata"`
 }
 
