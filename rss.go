@@ -43,15 +43,17 @@ func newRSS(posts *Posts, config Config) (*RSS, error) {
 	rss.Channel.TTL = "1800"
 
 	var items []RSSItem
-	for _, p := range []Post(*posts) {
-		var i RSSItem
-		i.Title = p.TitleText
-		i.Description = p.Description
-		i.Link = config.URL + "posts/" + p.Path()
-		i.Guid = i.Link
-		i.PubDate = p.Date.Format(timeFormat)
-		i.Category = strings.Join(p.Categories, ",")
-		items = append(items, i)
+	for i := 0; i < len([]Post(*posts)) && i < 10; i++ {
+		var it RSSItem
+		p := []Post(*posts)[i]
+		it.Title = p.TitleText
+		it.Description = p.Description
+		it.Link = config.URL + "posts/" + p.Path()
+		it.Guid = it.Link
+		it.PubDate = p.Date.Format(timeFormat)
+		it.Category = strings.Join(p.Categories, ",")
+		it.Content = Content{Text: string(p.Body)}
+		items = append(items, it)
 	}
 
 	rss.Channel.Item = items
@@ -76,12 +78,18 @@ type RSS struct {
 }
 
 type RSSItem struct {
-	Title       string `xml:"title"`
-	Description string `xml:"description"`
-	Link        string `xml:"link"`
-	PubDate     string `xml:"pubDate"`
-	Category    string `xml:"category"`
-	Guid        string `xml:"guid"`
+	Title       string  `xml:"title"`
+	Description string  `xml:"description"`
+	Link        string  `xml:"link"`
+	PubDate     string  `xml:"pubDate"`
+	Category    string  `xml:"category"`
+	Guid        string  `xml:"guid"`
+	Content     Content `xml:"content"`
+}
+
+type Content struct {
+	XMLName xml.Name `xml:"content"`
+	Text    string   `xml:",cdata"`
 }
 
 type AtomLink struct {

@@ -2,6 +2,7 @@ package blawg
 
 import (
 	"encoding/xml"
+	"html/template"
 	"strings"
 	"testing"
 )
@@ -9,6 +10,7 @@ import (
 func TestNewRSS(t *testing.T) {
 	posts := Posts{
 		Post{
+			Body:      template.HTML("<p>hello</p>"),
 			TitleText: "a bum title",
 			Metadata: Metadata{
 				Categories:  []string{"unix", "fun"},
@@ -47,6 +49,7 @@ func TestNewRSS(t *testing.T) {
 			Link:        "http://test-urlposts/1/1/1/a-bum-title/",
 			Guid:        "http://test-urlposts/1/1/1/a-bum-title/",
 			PubDate:     "Mon, 01 Jan 0001 00:00:00 +0000",
+			Content:     Content{Text: string(posts[0].Body)},
 		}
 		got := rss.Channel.Item[0]
 		if got != want {
@@ -59,6 +62,16 @@ func TestNewRSS(t *testing.T) {
 		xml.NewEncoder(&sb).Encode(rss)
 		rssXML := sb.String()
 		want := `<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">`
+		if !strings.Contains(rssXML, want) {
+			t.Errorf("Expected %+s to contain %+s\n", rssXML, want)
+		}
+	})
+
+	t.Run("could we get the content in a CDATA tag?", func(t *testing.T) {
+		sb := strings.Builder{}
+		xml.NewEncoder(&sb).Encode(rss)
+		rssXML := sb.String()
+		want := `<content><![CDATA[<p>hello</p>]]`
 		if !strings.Contains(rssXML, want) {
 			t.Errorf("Expected %+s to contain %+s\n", rssXML, want)
 		}
