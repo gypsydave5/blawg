@@ -1,6 +1,7 @@
 package blawg
 
 import (
+	"errors"
 	"fmt"
 	"html/template"
 	"io"
@@ -49,9 +50,15 @@ func makePages(siteDirectory string, pages []Page, tmplt *template.Template) err
 
 func makePage(siteDirectory string, page *Page, tmplt *template.Template) error {
 	path := fmt.Sprintf("%s/pages/%s/", siteDirectory, page.Path())
-	os.MkdirAll(path, os.FileMode(0777))
+	err := os.MkdirAll(path, os.FileMode(0777))
+	if err != nil {
+		return err
+	}
 	fileName := fmt.Sprintf("%sindex.html", path)
 	file, err := os.Create(fileName)
+	if err != nil {
+		return err
+	}
 	defer file.Close()
 	err = writePage(file, page, tmplt)
 
@@ -64,14 +71,19 @@ func makePost(siteDirectory string, post *Post, posts *Posts, tmplt *template.Te
 	}
 
 	path := fmt.Sprintf("%s/posts/%s", siteDirectory, post.Path())
-	os.MkdirAll(path, os.FileMode(0777))
-	fileName := fmt.Sprintf("%sindex.html", path)
-	file, err := os.Create(fileName)
-	defer file.Close()
+	err := os.MkdirAll(path, os.FileMode(0777))
 
 	if err != nil {
 		return err
 	}
+
+	fileName := fmt.Sprintf("%sindex.html", path)
+	file, err := os.Create(fileName)
+	if err != nil {
+		return err
+	}
+
+	defer file.Close()
 
 	err = writePost(file, post, posts, tmplt)
 
@@ -83,13 +95,19 @@ func makePost(siteDirectory string, post *Post, posts *Posts, tmplt *template.Te
 }
 
 func makeHomepage(siteDirectory string, posts *Posts, t *template.Template) error {
-	os.MkdirAll(siteDirectory, os.FileMode(0777))
-
-	f, err := os.Create(siteDirectory + "/index.html")
-	defer f.Close()
-
+	err := os.MkdirAll(siteDirectory, os.FileMode(0777))
 	if err != nil {
 		return err
+	}
+
+	f, err := os.Create(siteDirectory + "/index.html")
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	if len(*posts) == 0 {
+		return errors.New("no posts")
 	}
 
 	recentPost := (*posts)[0]
@@ -109,14 +127,16 @@ func makePostIndex(siteDirectory string, posts *Posts, t *template.Template) err
 		return nil
 	}
 
-	os.MkdirAll(siteDirectory+"/posts", os.FileMode(0777))
-
-	f, err := os.Create(siteDirectory + "/posts/index.html")
-	defer f.Close()
-
+	err := os.MkdirAll(siteDirectory+"/posts", os.FileMode(0777))
 	if err != nil {
 		return err
 	}
+
+	f, err := os.Create(siteDirectory + "/posts/index.html")
+	if err != nil {
+		return err
+	}
+	defer f.Close()
 
 	err = t.ExecuteTemplate(f, "index", posts)
 	return err

@@ -185,7 +185,7 @@ func GetPosts(postDir string) (*Posts, error) {
 		}
 		fileExtension := filepath.Ext(path)
 
-		if  !(fileExtension == ".md" || fileExtension == ".markdown" {
+		if !(fileExtension == ".md" || fileExtension == ".markdown") {
 			return nil
 		}
 
