@@ -1,4 +1,4 @@
-module github.com/gypsydave5/blawg
+module git.sr.ht/~dew/blawg
 
 go 1.15
 
