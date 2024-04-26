@@ -4,7 +4,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/gypsydave5/blawg"
+	"git.sr.ht/~dew/blawg"
 )
 
 var (
