@@ -41,7 +41,3 @@ func (ps Posts) Drop(n int) Posts {
 func SortPostsByDate(ps *Posts) {
 	sort.Sort(ps)
 }
-
-func (ps *Posts) sortByDate() {
-	sort.Sort(ps)
-}
