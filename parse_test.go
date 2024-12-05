@@ -81,7 +81,7 @@ func TestParse(t *testing.T) {
 
 	var expectedHTML = `<p>This is the body of the post&hellip;</p>
 
-<h2>A sub header</h2>
+<h2 id="a-sub-header">A sub header</h2>
 `
 	assert.StringsEqual(string(post.Body), expectedHTML)
 
@@ -118,7 +118,8 @@ title: "_example page_"
 ---
 This is the body of the page...
 
-## A sub header`
+## A sub header
+`
 
 	page, err := parsePage(strings.NewReader(rawPage))
 	assert.NotError(err)
@@ -127,7 +128,7 @@ This is the body of the page...
 
 	var expectedHTML = `<p>This is the body of the page&hellip;</p>
 
-<h2>A sub header</h2>
+<h2 id="a-sub-header">A sub header</h2>
 `
 	assert.StringsEqual(string(page.Body), expectedHTML)
 }
