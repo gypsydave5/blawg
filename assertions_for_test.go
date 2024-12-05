@@ -25,6 +25,17 @@ in
 	}
 }
 
+func (a Assertions) StringDoesNotContain(str, substr string) {
+	if strings.Contains(str, substr) {
+		a.test.Helper()
+		a.test.Errorf(`Expected not to find
+"%s"
+in
+"%s"
+`, substr, str)
+	}
+}
+
 func (a Assertions) True(b bool, s string) {
 	if !b {
 		a.test.Helper()

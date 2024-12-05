@@ -66,10 +66,6 @@ func makePage(siteDirectory string, page *Page, tmplt *template.Template) error 
 }
 
 func makePost(siteDirectory string, post *Post, posts *Posts, tmplt *template.Template) error {
-	if !post.Published {
-		return nil
-	}
-
 	path := fmt.Sprintf("%s/posts/%s", siteDirectory, post.Path())
 	err := os.MkdirAll(path, os.FileMode(0777))
 
@@ -110,7 +106,7 @@ func makeHomepage(siteDirectory string, posts *Posts, t *template.Template) erro
 		return errors.New("no posts")
 	}
 
-	recentPost := (*posts)[0]
+	recentPost := (posts.Published())[0]
 
 	page := PostPage{
 		&recentPost,
@@ -138,6 +134,6 @@ func makePostIndex(siteDirectory string, posts *Posts, t *template.Template) err
 	}
 	defer f.Close()
 
-	err = t.ExecuteTemplate(f, "index", posts)
+	err = t.ExecuteTemplate(f, "index", posts.Published())
 	return err
 }

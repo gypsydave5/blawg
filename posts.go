@@ -41,3 +41,16 @@ func (ps Posts) Drop(n int) Posts {
 func SortPostsByDate(ps *Posts) {
 	sort.Sort(ps)
 }
+
+// Published returns a copy of the Posts, filtering out the unpublished posts
+func (ps Posts) Published() Posts {
+	var onlyPublished = make(Posts, len(ps))
+
+	for _, post := range ps {
+		if post.Published {
+			onlyPublished = append(onlyPublished, post)
+		}
+	}
+
+	return onlyPublished
+}

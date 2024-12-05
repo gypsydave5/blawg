@@ -3,7 +3,6 @@ package blawg
 import (
 	"bytes"
 	"html/template"
-	"io/ioutil"
 	"os"
 	"testing"
 	"time"
@@ -53,7 +52,7 @@ func TestMakePosts(t *testing.T) {
 	for _, post := range posts {
 		expectedFile := testSiteDirectory + "/posts/" + post.Path() + "index.html"
 		assert.FileExists(expectedFile)
-		contents, _ := ioutil.ReadFile(expectedFile)
+		contents, _ := os.ReadFile(expectedFile)
 		assert.StringContains(string(contents), string(post.Title))
 	}
 
@@ -62,20 +61,26 @@ func TestMakePosts(t *testing.T) {
 
 func TestPostsIndex(t *testing.T) {
 	assert := NewAssertions(t)
-	postOne := testPost("Abba", "First Post Body", 1979, 12, 5)
-	postTwo := testPost("Second Post", "Second Post Body", 1989, 12, 5)
+	post := testPost("Abba", "First Post Body", 1979, 12, 5)
+	unpublishedPost := testPost("Unpublished Post", "Second Post Body", 1989, 12, 5)
+	unpublishedPost.Published = false
+
 	posts := Posts{
-		postOne,
-		postTwo,
+		post,
+		unpublishedPost,
 	}
 
-	indexTemplate, err := template.New("index").Parse(`<p>{{range .}}{{.Title}}{{end}}</p>"`)
+	indexTemplate, err := template.New("index").Parse("{{range .}}<p>{{.Title}}</p>\n{{end}}")
 	assert.NotError(err)
 
 	err = makePostIndex(testSiteDirectory, &posts, indexTemplate)
 	assert.NotError(err)
 
 	assert.FileExists(testSiteDirectory + "/posts/index.html")
+	fileContents, _ := os.ReadFile(testSiteDirectory + "/posts/index.html")
+
+	assert.StringContains(string(fileContents), string(post.Title))
+	assert.StringDoesNotContain(string(fileContents), string(unpublishedPost.Title))
 }
 
 func TestBuildPostPath(t *testing.T) {
@@ -136,8 +141,8 @@ func TestNotSavingUnpublishedPost(t *testing.T) {
 	err = makePost(testSiteDirectory, &post, nil, stubTemplate())
 	assert.NotError(err)
 
-	unexpectedFile := testSiteDirectory + "/posts/" + post.Path() + "index.html"
-	assert.FileDoesntExist(unexpectedFile)
+	unpublishedFile := testSiteDirectory + "/posts/" + post.Path() + "index.html"
+	assert.FileExists(unpublishedFile)
 
 	tearDownTestSite(t)
 }
