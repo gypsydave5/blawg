@@ -44,7 +44,7 @@ func SortPostsByDate(ps *Posts) {
 
 // Published returns a copy of the Posts, filtering out the unpublished posts
 func (ps Posts) Published() Posts {
-	var onlyPublished = make(Posts, len(ps))
+	var onlyPublished = make(Posts, 0, len(ps))
 
 	for _, post := range ps {
 		if post.Published {
