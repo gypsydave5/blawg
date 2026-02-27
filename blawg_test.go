@@ -2,6 +2,7 @@ package blawg
 
 import (
 	"io/ioutil"
+	"os"
 	"testing"
 )
 
@@ -10,6 +11,7 @@ var testTemplateDirectory = "example/templates"
 var testExtrasDirectory = "example/extras"
 var testPostDirectory = "example/posts"
 var testPagesDirectory = "example/pages"
+var testDraftsDirectory = "example/drafts"
 
 func TestMakeBlog(t *testing.T) {
 	assert := NewAssertions(t)
@@ -52,4 +54,20 @@ func TestMakeBlog(t *testing.T) {
 	assert.FileExists(testSiteDirectory + "/pages/about/index.html")
 
 	// tearDownTestSite(t)
+}
+
+func TestMakeDrafts(t *testing.T) {
+	assert := NewAssertions(t)
+	siteDir := "test-drafts-site"
+
+	err := MakeDrafts(testDraftsDirectory, testTemplateDirectory, siteDir)
+	assert.NotError(err)
+
+	assert.FileExists(siteDir + "/drafts/a-draft-post/index.html")
+	assert.FileExists(siteDir + "/drafts/no-date-draft/index.html")
+
+	err = os.RemoveAll(siteDir)
+	if err != nil {
+		t.Errorf("Could not delete test directory: %s", err)
+	}
 }

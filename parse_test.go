@@ -111,6 +111,62 @@ func TestMetadataParseError(t *testing.T) {
 	assert.ErrorMessage(err, `parsing time "2016-10-15T23:24:01" as "2006-01-02 15:04:05": cannot parse "T23:24:01" as " "`)
 }
 
+func TestParseDraft(t *testing.T) {
+	assert := NewAssertions(t)
+
+	t.Run("full frontmatter", func(t *testing.T) {
+		assert := NewAssertions(t)
+		raw := `---
+title: "my draft"
+date: 2024-06-15 10:00:00
+published: true
+---
+Draft body here.
+`
+		draft, err := parseDraft(strings.NewReader(raw))
+		assert.NotError(err)
+		assert.StringsEqual(string(draft.Title), "my draft")
+		assert.StringsEqual(draft.TitleText, "my draft")
+
+		expectedDate, _ := time.Parse(dateFormat, "2024-06-15 10:00:00")
+		if draft.Date != expectedDate {
+			t.Errorf("expected date %v, got %v", expectedDate, draft.Date)
+		}
+
+		assert.StringContains(string(draft.Body), "Draft body here")
+	})
+
+	t.Run("missing date", func(t *testing.T) {
+		assert := NewAssertions(t)
+		raw := `---
+title: "no date draft"
+published: true
+---
+Body without a date.
+`
+		draft, err := parseDraft(strings.NewReader(raw))
+		assert.NotError(err)
+		assert.StringsEqual(draft.TitleText, "no date draft")
+
+		var zeroTime time.Time
+		if draft.Date != zeroTime {
+			t.Errorf("expected zero time, got %v", draft.Date)
+		}
+	})
+
+	t.Run("no frontmatter is skipped by GetDrafts", func(t *testing.T) {
+		assert := NewAssertions(t)
+		// parseDraft itself returns an error for no-frontmatter
+		_, err := parseDraft(strings.NewReader("no frontmatter here"))
+		if err == nil {
+			t.Error("expected an error for input without frontmatter")
+		}
+		assert.StringsEqual(err.Error(), "no metadata block")
+	})
+
+	_ = assert
+}
+
 func TestParsePage(t *testing.T) {
 	assert := NewAssertions(t)
 	var rawPage = `---

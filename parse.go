@@ -165,6 +165,72 @@ func parseMeta(rawMeta []byte) (m Metadata, err error) {
 	return
 }
 
+func parseDraft(r io.Reader) (*Draft, error) {
+	rawMeta, body, err := split(r)
+	if err != nil {
+		return nil, err
+	}
+
+	meta, err := parseMeta(rawMeta)
+	if err != nil {
+		return nil, err
+	}
+
+	draft := new(Draft)
+	draft.Metadata = meta
+
+	if meta.Date != "" {
+		date, parseErr := time.Parse(dateFormat, meta.Date)
+		if parseErr == nil {
+			draft.Date = date
+		}
+	}
+
+	postHTML := blackfriday.Run(body, markdownExtensions)
+	draft.Body = template.HTML(postHTML)
+	draft.Title = htmlTitle(meta.Title)
+	draft.TitleText, _ = textFromHTMLTemplate(draft.Title)
+
+	return draft, nil
+}
+
+// GetDrafts reads all markdown files in dir and parses them as drafts.
+// Files without a frontmatter block are silently skipped.
+func GetDrafts(dir string) ([]Draft, error) {
+	var drafts []Draft
+	err := filepath.Walk(dir, func(path string, fileInfo os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if fileInfo.IsDir() {
+			return nil
+		}
+
+		ext := filepath.Ext(path)
+		if !(ext == ".md" || ext == ".markdown") {
+			return nil
+		}
+
+		file, err := os.Open(path)
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+
+		draft, err := parseDraft(file)
+		if err != nil {
+			// Skip files that can't be parsed (e.g. no frontmatter)
+			return nil
+		}
+
+		drafts = append(drafts, *draft)
+		return nil
+	})
+
+	return drafts, err
+}
+
 // GetTemplates reads in all of the templates in the templates directory
 func GetTemplates(templateDirectory string) (*template.Template, error) {
 	return template.ParseGlob(templateDirectory + "/**")

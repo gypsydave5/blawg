@@ -62,3 +62,16 @@
 
 {{end}}
 
+{{define "draft"}}
+<!DOCTYPE html>
+<html>
+  {{template "head"}}
+  <body>
+    <main>
+      <p><strong>DRAFT - work in progress</strong></p>
+      {{template "article" .Draft}}
+    </main>
+  </body>
+</html>
+{{end}}
+

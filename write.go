@@ -118,6 +118,45 @@ func makeHomepage(siteDirectory string, posts *Posts, t *template.Template) erro
 	return err
 }
 
+func makeDraft(siteDir string, draft *Draft, t *template.Template) error {
+	path := fmt.Sprintf("%s/%s", siteDir, draft.Path())
+	err := os.MkdirAll(path, os.FileMode(0777))
+	if err != nil {
+		return err
+	}
+
+	fileName := fmt.Sprintf("%sindex.html", path)
+	file, err := os.Create(fileName)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	if t.Lookup("draft") != nil {
+		return t.ExecuteTemplate(file, "draft", &DraftPage{Draft: draft})
+	}
+
+	// Fall back to post template
+	post := &Post{
+		Body:      draft.Body,
+		Title:     draft.Title,
+		TitleText: draft.TitleText,
+		Date:      draft.Date,
+		Metadata:  draft.Metadata,
+	}
+	return t.ExecuteTemplate(file, "post", &PostPage{Post: post})
+}
+
+func makeDraftPosts(siteDir string, drafts []Draft, t *template.Template) error {
+	for _, draft := range drafts {
+		err := makeDraft(siteDir, &draft, t)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func makePostIndex(siteDirectory string, posts *Posts, t *template.Template) error {
 	if t.Lookup("index") == nil {
 		return nil

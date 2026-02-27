@@ -61,6 +61,22 @@ func MakeBlawg(postDirectory, pagesDirectory, templateDirectory, extrasDirectory
 	return err
 }
 
+// MakeDrafts renders draft posts to siteDirectory/drafts/<slug>/index.html.
+// Drafts are excluded from the homepage, post index, and RSS feed.
+func MakeDrafts(draftsDir, templateDir, siteDir string) error {
+	t, err := GetTemplates(templateDir)
+	if err != nil {
+		return err
+	}
+
+	drafts, err := GetDrafts(draftsDir)
+	if err != nil {
+		return err
+	}
+
+	return makeDraftPosts(siteDir, drafts, t)
+}
+
 func copyExtrasDirectoryContents(publicDirectory, siteDirectory string) (err error) {
 	err = filepath.Walk(publicDirectory, func(sourcePath string, info os.FileInfo, err error) error {
 		if err != nil {
