@@ -75,3 +75,18 @@
 </html>
 {{end}}
 
+{{define "drafts-index"}}
+<!DOCTYPE html>
+<html>
+  {{template "head"}}
+  <body>
+    <main>
+      <h1>Drafts</h1>
+      <ul>
+        {{range .}}<li><a href="/{{.Path}}">{{.TitleText}}</a></li>{{end}}
+      </ul>
+    </main>
+  </body>
+</html>
+{{end}}
+

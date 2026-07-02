@@ -157,6 +157,25 @@ func makeDraftPosts(siteDir string, drafts []Draft, t *template.Template) error 
 	return nil
 }
 
+func makeDraftIndex(siteDir string, drafts []Draft, t *template.Template) error {
+	if t.Lookup("drafts-index") == nil {
+		return nil
+	}
+
+	err := os.MkdirAll(siteDir+"/drafts", os.FileMode(0777))
+	if err != nil {
+		return err
+	}
+
+	f, err := os.Create(siteDir + "/drafts/index.html")
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	return t.ExecuteTemplate(f, "drafts-index", drafts)
+}
+
 func makePostIndex(siteDirectory string, posts *Posts, t *template.Template) error {
 	if t.Lookup("index") == nil {
 		return nil

@@ -66,6 +66,11 @@ func TestMakeDrafts(t *testing.T) {
 	assert.FileExists(siteDir + "/drafts/a-draft-post/index.html")
 	assert.FileExists(siteDir + "/drafts/no-date-draft/index.html")
 
+	assert.FileExists(siteDir + "/drafts/index.html")
+	contents, _ := os.ReadFile(siteDir + "/drafts/index.html")
+	assert.StringContains(string(contents), "a draft post")
+	assert.StringContains(string(contents), "no date draft")
+
 	err = os.RemoveAll(siteDir)
 	if err != nil {
 		t.Errorf("Could not delete test directory: %s", err)

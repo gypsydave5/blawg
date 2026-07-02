@@ -74,7 +74,12 @@ func MakeDrafts(draftsDir, templateDir, siteDir string) error {
 		return err
 	}
 
-	return makeDraftPosts(siteDir, drafts, t)
+	err = makeDraftPosts(siteDir, drafts, t)
+	if err != nil {
+		return err
+	}
+
+	return makeDraftIndex(siteDir, drafts, t)
 }
 
 func copyExtrasDirectoryContents(publicDirectory, siteDirectory string) (err error) {
