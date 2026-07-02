@@ -37,7 +37,7 @@ func parse(rawPost io.Reader) (*Post, error) {
 		return post, err
 	}
 
-	postHTML := blackfriday.Run(body, markdownExtensions)
+	postHTML := blackfriday.Run(body, markdownExtensions, markdownRenderer())
 	post.Body = template.HTML(postHTML)
 
 	post.Title = htmlTitle(post.Metadata.Title)
@@ -52,7 +52,7 @@ func parsePage(rawPage io.Reader) (page *Page, err error) {
 		return
 	}
 
-	pageHTML := blackfriday.Run(body, markdownExtensions)
+	pageHTML := blackfriday.Run(body, markdownExtensions, markdownRenderer())
 	page.Body = template.HTML(pageHTML)
 	meta, err := parseMeta(rawMeta)
 	if err != nil {
@@ -186,7 +186,7 @@ func parseDraft(r io.Reader) (*Draft, error) {
 		}
 	}
 
-	postHTML := blackfriday.Run(body, markdownExtensions)
+	postHTML := blackfriday.Run(body, markdownExtensions, markdownRenderer())
 	draft.Body = template.HTML(postHTML)
 	draft.Title = htmlTitle(meta.Title)
 	draft.TitleText, _ = textFromHTMLTemplate(draft.Title)

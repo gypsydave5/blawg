@@ -30,5 +30,26 @@ tags:
 Today I started to write my blawg...
 .RE
 .fi
+.SH REQUIREMENTS
+Fenced code blocks marked
+.I mermaid
+are rendered to inline SVG using
+.B mmdc(1)
+from
+.I @mermaid-js/mermaid-cli,
+which in turn requires a Chrome/Chromium binary available to Puppeteer.
+If
+.B mmdc
+is not installed or fails, the block falls back to a plain
+.I <pre><code>
+block.
+
+Install with:
+.nf
+.RS
+npm install -g @mermaid-js/mermaid-cli
+npx puppeteer browsers install chrome-headless-shell
+.RE
+.fi
 .SH SEE ALSO
-pandoc(1)
+pandoc(1), mmdc(1)

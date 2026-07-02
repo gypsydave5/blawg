@@ -167,6 +167,17 @@ Body without a date.
 	_ = assert
 }
 
+func TestMermaidCodeFenceRendersSVG(t *testing.T) {
+	assert := NewAssertions(t)
+	var rawPage = "---\ntitle: \"diagram page\"\n---\n" +
+		"```mermaid\ngraph TD;\nA-->B;\n```\n"
+
+	page, err := parsePage(strings.NewReader(rawPage))
+	assert.NotError(err)
+	assert.StringContains(string(page.Body), "<svg")
+	assert.StringDoesNotContain(string(page.Body), "<code")
+}
+
 func TestParsePage(t *testing.T) {
 	assert := NewAssertions(t)
 	var rawPage = `---
