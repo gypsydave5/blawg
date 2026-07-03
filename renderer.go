@@ -1,6 +1,7 @@
 package blawg
 
 import (
+	"fmt"
 	"io"
 
 	"gopkg.in/russross/blackfriday.v2"
@@ -27,7 +28,7 @@ func (r *mermaidRenderer) RenderNode(w io.Writer, node *blackfriday.Node, enteri
 	if node.Type == blackfriday.CodeBlock && string(node.CodeBlockData.Info) == mermaidLanguage {
 		svg, err := renderMermaidSVG(string(node.Literal))
 		if err == nil {
-			w.Write([]byte(svg))
+			fmt.Fprintf(w, `<div class="mermaid-diagram">%s</div>`, svg)
 			return blackfriday.GoToNext
 		}
 	}
