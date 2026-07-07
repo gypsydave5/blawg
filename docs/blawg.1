@@ -19,10 +19,11 @@ Here is an example of a blog file:
 .nf
 .RS
 title: Blawg
-date: 1/1/1
+date: 2016\-10\-15 23:24:01
 tags:
   \- unix
   \- vim
+published: true
 \-\-\-
 
 # Blawg
@@ -30,26 +31,58 @@ tags:
 Today I started to write my blawg...
 .RE
 .fi
-.SH SERIES
-Posts can be grouped into a multi-part
+.SH FRONTMATTER
+The keys understood in a post's YAML frontmatter block:
+.TP
+.B title
+Post title. Rendered through the same markdown/YAML title handling as the
+body, so inline markdown (e.g. italics) is allowed.
+.TP
+.B date
+Required. Must be in the form
+.I YYYY\-MM\-DD HH:MM:SS,
+e.g.
+.I 2016\-10\-15 23:24:01.
+Determines the post's URL path and its ordering against other posts.
+.TP
+.B published
+Boolean, defaults to
+.I false.
+Unpublished posts are skipped entirely by
+.B blawg
+(excluded from the site, index, homepage, and RSS feed). Not used for
+drafts, which are always written regardless of this key.
+.TP
+.B tags
+A YAML list of strings. Rendered as the post's RSS category.
+.TP
+.B description
+Free text, used as the post's RSS item description.
+.TP
+.B layout
+Accepted for compatibility with other static site generators'
+frontmatter, but currently unused by
+.B blawg.
+.TP
+.B series
+The series (chapter group) this post belongs to. The name doubles as
+both the series' display title and the key used to group its posts
+together \- see
+.B SERIES
+below.
+.TP
+.B part
+The 1\-based chapter number within
+.I series.
+Required if
 .I series
-(chapters) with two frontmatter fields:
-.I series,
-the series name (used both as its display title and as the key used to
-group posts together), and
-.I part,
-a 1-based chapter number.
-
-.nf
-.RS
-title: Part Two
-series: My Deep Dive
-part: 2
-\-\-\-
-.RE
-.fi
-
-Every post in a series has its full, part-ordered chapter list available
+is set.
+.SH SERIES
+Posts sharing a
+.I series
+name are grouped into an ordered, multi\-part chapter list, ordered by
+.I part.
+Every post in a series has its full, part\-ordered chapter list available
 to templates. Two posts in the same series may not share a
 .I part
 number, and a post with
