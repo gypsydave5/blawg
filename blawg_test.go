@@ -53,6 +53,17 @@ func TestMakeBlog(t *testing.T) {
 
 	assert.FileExists(testSiteDirectory + "/pages/about/index.html")
 
+	assert.FileExists(testSiteDirectory + "/series/example-series/index.html")
+	seriesIndex, err := ioutil.ReadFile(testSiteDirectory + "/series/example-series/index.html")
+	assert.NotError(err)
+	assert.StringContains(string(seriesIndex), "series chapter one")
+	assert.StringContains(string(seriesIndex), "series chapter two")
+
+	chapterOne, err := ioutil.ReadFile(testSiteDirectory + "/posts/2010/1/1/series-chapter-one/index.html")
+	assert.NotError(err)
+	assert.StringContains(string(chapterOne), "Part 1 of 2 in")
+	assert.StringContains(string(chapterOne), "series chapter two")
+
 	// tearDownTestSite(t)
 }
 

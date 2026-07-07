@@ -13,6 +13,11 @@ type Post struct {
 	Date      time.Time
 	TitleText string
 	Metadata
+
+	// SeriesPosts holds every post in this post's series, ordered by
+	// Part. It is nil for posts that aren't part of a series, and is
+	// populated by AttachSeries after all posts have been loaded.
+	SeriesPosts Posts
 }
 
 // The Metadata of a Post
@@ -23,6 +28,14 @@ type Metadata struct {
 	Categories  []string `yaml:"tags"`
 	Published   bool     `yaml:"published"`
 	Description string   `yaml:"description"`
+	Series      string   `yaml:"series"`
+	Part        int      `yaml:"part"`
+}
+
+// SeriesPath is the path of this post's series index page. Only
+// meaningful when the post belongs to a series.
+func (p *Post) SeriesPath() string {
+	return "series/" + urlSafeFileName(p.Series) + "/"
 }
 
 // Path of a post

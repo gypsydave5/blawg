@@ -24,9 +24,19 @@
 {{end}}
 
 {{define "article"}}
+{{if .SeriesPosts}}{{template "series-nav" .}}{{end}}
 <h1>{{.Title}}</h1>
 <time datetime="{{.Date.Format "2006-01-02T15:04"}}" >{{.Date.Format "Jan 02, 2006"}}</time>
 <section>{{.Body}}</section>
+{{end}}
+
+{{define "series-nav"}}
+<nav class="series-nav">
+  <p>Part {{.Part}} of {{len .SeriesPosts}} in <a href="/{{.SeriesPath}}">{{.Series}}</a></p>
+  <ol>
+    {{range .SeriesPosts}}<li{{if eq .Part $.Part}} aria-current="true"{{end}}><a href="/posts/{{.Path}}">{{.TitleText}}</a></li>{{end}}
+  </ol>
+</nav>
 {{end}}
 
 {{define "head"}}
@@ -90,3 +100,17 @@
 </html>
 {{end}}
 
+{{define "series-index"}}
+<!DOCTYPE html>
+<html>
+  {{template "head"}}
+  <body>
+    <main>
+      <h1>{{.Name}}</h1>
+      <ol>
+        {{range .Posts}}<li><a href="/posts/{{.Path}}">{{.TitleText}}</a></li>{{end}}
+      </ol>
+    </main>
+  </body>
+</html>
+{{end}}

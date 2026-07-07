@@ -30,6 +30,36 @@ tags:
 Today I started to write my blawg...
 .RE
 .fi
+.SH SERIES
+Posts can be grouped into a multi-part
+.I series
+(chapters) with two frontmatter fields:
+.I series,
+the series name (used both as its display title and as the key used to
+group posts together), and
+.I part,
+a 1-based chapter number.
+
+.nf
+.RS
+title: Part Two
+series: My Deep Dive
+part: 2
+\-\-\-
+.RE
+.fi
+
+Every post in a series has its full, part-ordered chapter list available
+to templates. Two posts in the same series may not share a
+.I part
+number, and a post with
+.I series
+set must also set
+.I part;
+both are build errors. If the template set defines a
+.I series-index
+block, each series additionally gets an index page at
+.I /series/<slug>/.
 .SH REQUIREMENTS
 Fenced code blocks marked
 .I mermaid

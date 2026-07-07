@@ -176,6 +176,34 @@ func makeDraftIndex(siteDir string, drafts []Draft, t *template.Template) error 
 	return t.ExecuteTemplate(f, "drafts-index", drafts)
 }
 
+func makeSeriesIndexes(siteDir string, series map[string]Series, t *template.Template) error {
+	if t.Lookup("series-index") == nil {
+		return nil
+	}
+
+	for _, s := range series {
+		path := fmt.Sprintf("%s/%s", siteDir, s.Path())
+		err := os.MkdirAll(path, os.FileMode(0777))
+		if err != nil {
+			return err
+		}
+
+		fileName := fmt.Sprintf("%sindex.html", path)
+		file, err := os.Create(fileName)
+		if err != nil {
+			return err
+		}
+
+		err = t.ExecuteTemplate(file, "series-index", s)
+		file.Close()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func makePostIndex(siteDirectory string, posts *Posts, t *template.Template) error {
 	if t.Lookup("index") == nil {
 		return nil

@@ -22,6 +22,11 @@ func MakeBlawg(postDirectory, pagesDirectory, templateDirectory, extrasDirectory
 
 	SortPostsByDate(posts)
 
+	series, err := AttachSeries(posts)
+	if err != nil {
+		return err
+	}
+
 	t, err := GetTemplates(templateDirectory)
 	if err != nil {
 		return err
@@ -33,6 +38,11 @@ func MakeBlawg(postDirectory, pagesDirectory, templateDirectory, extrasDirectory
 	}
 
 	err = makePostIndex(siteDirectory, posts, t)
+	if err != nil {
+		return err
+	}
+
+	err = makeSeriesIndexes(siteDirectory, series, t)
 	if err != nil {
 		return err
 	}
