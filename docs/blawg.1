@@ -93,6 +93,117 @@ both are build errors. If the template set defines a
 .I series-index
 block, each series additionally gets an index page at
 .I /series/<slug>/.
+.SH TEMPLATES
+Templates are standard Go
+.I html/template
+files, loaded from the templates directory and referenced by
+.I {{define "name"}}...{{end}}
+block name. The following block names are looked up by
+.B blawg;
+all but
+.I post,
+.I index
+and
+.I page
+are optional \- skipped if undefined.
+.TP
+.B post
+Rendered once per post. Data is a
+.I PostPage:
+.I .Post
+(the current post, see below) and
+.I .PostList
+(all published posts, a
+.I Posts
+slice, newest first).
+.TP
+.B index
+Rendered at
+.I /posts/.
+Data is a
+.I Posts
+slice of all published posts.
+.TP
+.B page
+Rendered once per page (from the pages directory). Data is a
+.I *Page:
+.I .Title,
+.I .TitleText,
+.I .Body,
+.I .Path.
+.TP
+.B draft
+Rendered once per draft. Data is a
+.I DraftPage:
+.I .Draft
+(see below).
+.TP
+.B drafts\-index
+Rendered at
+.I /drafts/.
+Data is a
+.I []Draft
+slice.
+.TP
+.B series\-index
+Rendered at
+.I /series/<slug>/
+for each series. Data is a
+.I Series:
+.I .Name
+(the series' display title) and
+.I .Posts
+(its chapters, a
+.I Posts
+slice ordered by
+.I part).
+.PP
+A post or draft's own fields (available as
+.I .Post
+/
+.I .Draft,
+or directly when a sub\-template is invoked with one, as the bundled
+example templates'
+.I article
+block does):
+.TP
+.B .Title / .TitleText
+Rendered HTML title, and its plain\-text form.
+.TP
+.B .Date
+A Go
+.I time.Time.
+.TP
+.B .Body
+Rendered post body, as HTML.
+.TP
+.B .Path
+URL\-safe path to the post/draft, e.g.
+.I 2016/10/15/blawg/
+for a post,
+.I drafts/blawg/
+for a draft.
+.TP
+.B .Series / .Part
+The frontmatter values, verbatim (empty string / zero if not in a series).
+.TP
+.B .SeriesPosts
+This post's full chapter list (a
+.I Posts
+slice, ordered by
+.I part),
+or
+.I nil
+if not in a series. Each element has the same fields as above, including
+its own
+.I .Part,
+so templates can find the current chapter by comparing
+.I .Part
+against the outer post's.
+.TP
+.B .SeriesPath
+URL\-safe path to this post's series index page, e.g.
+.I series/my\-deep\-dive/.
 .SH REQUIREMENTS
 Fenced code blocks marked
 .I mermaid
