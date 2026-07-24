@@ -178,6 +178,26 @@ func TestMermaidCodeFenceRendersSVG(t *testing.T) {
 	assert.StringDoesNotContain(string(page.Body), "<code")
 }
 
+func TestFootnotesLinkBackToTheText(t *testing.T) {
+	assert := NewAssertions(t)
+	var rawPost = `---
+title: "footnoted post"
+date: 2016-10-15 23:24:01
+---
+Some text with a footnote.[^1]
+
+[^1]: The footnote itself.
+`
+
+	post, err := parse(strings.NewReader(rawPost))
+	assert.NotError(err)
+
+	body := string(post.Body)
+	assert.StringContains(body, `<sup class="footnote-ref" id="fnref:1">`)
+	assert.StringContains(body, `href="#fn:1"`)
+	assert.StringContains(body, `<a class="footnote-return" href="#fnref:1">`)
+}
+
 func TestParsePage(t *testing.T) {
 	assert := NewAssertions(t)
 	var rawPage = `---

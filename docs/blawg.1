@@ -204,6 +204,27 @@ against the outer post's.
 .B .SeriesPath
 URL\-safe path to this post's series index page, e.g.
 .I series/my\-deep\-dive/.
+.SH FOOTNOTES
+Markdown footnotes are supported:
+.nf
+.RS
+Some text with a footnote.[^1]
+
+[^1]: The footnote itself.
+.RE
+.fi
+
+A reference renders as
+.I <sup class="footnote\-ref" id="fnref:1">
+wrapping a link to
+.I #fn:1,
+and each footnote in the
+.I <div class="footnotes">
+block ends with a return link,
+.I <a class="footnote\-return" href="#fnref:1">,
+so readers can jump back to where they were reading. The link contains a
+.I <span class="footnote\-return\-icon">
+holding a U+21A9 arrow, which stylesheets can restyle or replace.
 .SH REQUIREMENTS
 Fenced code blocks marked
 .I mermaid
